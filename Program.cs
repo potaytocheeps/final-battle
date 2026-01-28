@@ -1,5 +1,21 @@
-﻿Game game = new Game();
+﻿string playerName = AskUserForInput("Enter the name for the True Programmer: ");
+
+Game game = new Game(playerName);
 game.PlayGame();
+
+
+string AskUserForInput(string question)
+{
+    while (true)
+    {
+        Console.Write(question);
+        string? input = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(input)) continue;
+        else return input;
+    }
+}
+
 
 /// <summary>
 /// Contains the main logic for the whole game.
@@ -10,9 +26,9 @@ public class Game
     private Party EnemyParty { get; }
     private Battle Battle { get; }
 
-    public Game()
+    public Game(string name)
     {
-        HeroParty = new Party(new Skeleton());
+        HeroParty = new Party(new TrueProgrammer(name));
         EnemyParty = new Party(new Skeleton());
         Battle = new Battle(heroParty: HeroParty, enemyParty: EnemyParty);
     }
@@ -102,6 +118,12 @@ public class Character
 public class Skeleton : Character
 {
     public Skeleton() : base("Skeleton") { }
+}
+
+
+public class TrueProgrammer : Character
+{
+    public TrueProgrammer(string name) : base(name) { }
 }
 
 
