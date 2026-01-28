@@ -22,20 +22,20 @@ string AskUserForInput(string question)
 /// </summary>
 public class Game
 {
-    private Party HeroParty { get; }
-    private Party EnemyParty { get; }
-    private Battle Battle { get; }
+    private readonly Player _player1;
+    private readonly Player _player2;
+    private readonly Battle _battle;
 
     public Game(string name)
     {
-        HeroParty = new Party(new TrueProgrammer(name));
-        EnemyParty = new Party(new Skeleton());
-        Battle = new Battle(heroParty: HeroParty, enemyParty: EnemyParty);
+        _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
+        _player2 = new ComputerPlayer(new Party(new Skeleton()));
+        _battle = new Battle(player1: _player1, player2: _player2);
     }
 
     public void PlayGame()
     {
-        Battle.Play();
+        _battle.Play();
     }
 }
 
@@ -46,13 +46,13 @@ public class Game
 /// </summary>
 public class Battle
 {
-    private Party HeroParty { get; }
-    private Party EnemyParty { get; }
+    private readonly Player _player1;
+    private readonly Player _player2;
 
-    public Battle(Party heroParty, Party enemyParty)
+    public Battle(Player player1, Player player2)
     {
-        HeroParty = heroParty;
-        EnemyParty = enemyParty;
+        _player1 = player1;
+        _player2 = player2;
     }
 
     public void Play()
@@ -65,21 +65,19 @@ public class Battle
 
     public void PlayRound()
     {
-        Console.WriteLine("Hero Party");
-        foreach (Character heroCharacter in HeroParty.Characters)
-        {
-            Console.WriteLine($"It is {heroCharacter.Name}'s turn...");
-            heroCharacter.TakeTurn();
-            Thread.Sleep(500);
-            Console.WriteLine();
-        }
+        Console.WriteLine("Player 1");
+        TakePlayerTurn(_player1);
 
-        Console.WriteLine("Enemy Party");
-        foreach (Character enemyCharacter in EnemyParty.Characters)
+        Console.WriteLine("Player 2");
+        TakePlayerTurn(_player2);
+    }
+
+    private void TakePlayerTurn(Player player)
+    {
+        foreach (Character character in player.Party.Characters)
         {
-            Console.WriteLine($"It is {enemyCharacter.Name}'s turn...");
-            enemyCharacter.TakeTurn();
-            Thread.Sleep(500);
+            Console.WriteLine($"It is {character.Name}'s turn...");
+            player.TakeTurn(character);
             Console.WriteLine();
         }
     }
@@ -98,12 +96,7 @@ public class Character
         Name = name.ToUpper();
     }
 
-    public void TakeTurn()
-    {
-        PerformAction(Actions.Nothing);
-    }
-
-    private void PerformAction(Actions action)
+    public void PerformAction(Actions action)
     {
         switch (action)
         {
@@ -124,6 +117,57 @@ public class Skeleton : Character
 public class TrueProgrammer : Character
 {
     public TrueProgrammer(string name) : base(name) { }
+}
+
+
+/// <summary>
+/// A Player in the game that controls a Party of Characters.
+/// </summary>
+public abstract class Player
+{
+    public Party Party { get; }
+
+    public Player(Party party)
+    {
+        Party = party;
+    }
+
+    public abstract void TakeTurn(Character character);
+    public abstract Actions SelectAction();
+}
+
+
+public class HumanPlayer : Player
+{
+    public HumanPlayer(Party party) : base(party) { }
+
+    public override void TakeTurn(Character character)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Actions SelectAction()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
+public class ComputerPlayer : Player
+{
+    public ComputerPlayer(Party party) : base(party) { }
+
+    public override void TakeTurn(Character character)
+    {
+        Thread.Sleep(500);
+        Actions action = SelectAction();
+        character.PerformAction(action);
+    }
+
+    public override Actions SelectAction()
+    {
+        return Actions.Nothing;
+    }
 }
 
 
