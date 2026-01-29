@@ -66,18 +66,18 @@ public class Battle
     public void PlayRound()
     {
         Console.WriteLine("Player 1");
-        TakePlayerTurn(_player1);
+        TakePlayerTurn(currentPlayer: _player1, enemyPlayer: _player2);
 
         Console.WriteLine("Player 2");
-        TakePlayerTurn(_player2);
+        TakePlayerTurn(currentPlayer: _player2, enemyPlayer: _player1);
     }
 
-    private void TakePlayerTurn(Player player)
+    private void TakePlayerTurn(Player currentPlayer, Player enemyPlayer)
     {
-        foreach (Character character in player.Party.Characters)
+        foreach (Character character in currentPlayer.Party.Characters)
         {
             Console.WriteLine($"It is {character.Name}'s turn...");
-            player.TakeTurn(character);
+            currentPlayer.TakeTurn(character, enemyPlayer);
             Console.WriteLine();
         }
     }
@@ -90,18 +90,24 @@ public class Battle
 public class Character
 {
     public string Name { get; }
+    protected Dictionary<AttackType, Attack> _attacks;
 
     public Character(string name)
     {
         Name = name.ToUpper();
+        _attacks = new ();
     }
 
-    public void PerformAction(Actions action)
+    public void PerformAction(Player currentPlayer, ActionType action, Player enemyPlayer)
     {
         switch (action)
         {
-            case Actions.Nothing:
+            case ActionType.Nothing:
                 Console.WriteLine($"{Name} did {action.ToString().ToUpper()}");
+                break;
+            case ActionType.Attack:
+                (AttackType attackType, Character attackTarget) = currentPlayer.PerformAttack(enemyPlayer.Party);
+                Console.WriteLine($"{Name} used {_attacks[attackType].Name} on {attackTarget.Name}");
                 break;
         }
     }
@@ -110,14 +116,45 @@ public class Character
 
 public class Skeleton : Character
 {
-    public Skeleton() : base("Skeleton") { }
+    public Skeleton() : base("Skeleton")
+    {
+        _attacks.Add(AttackType.Standard, new StandardAttack("Bone Crunch"));
+    }
 }
 
 
 public class TrueProgrammer : Character
 {
-    public TrueProgrammer(string name) : base(name) { }
+    public TrueProgrammer(string name) : base(name)
+    {
+        _attacks.Add(AttackType.Standard, new StandardAttack("Punch"));
+    }
 }
+
+
+/// <summary>
+/// Defines characteristics of the different attacks that a character can
+/// perform against enemy characters.
+/// </summary>
+public abstract class Attack
+{
+    public string Name { get; }
+
+    public Attack(string name)
+    {
+        Name = name.ToUpper();
+    }
+}
+
+
+public class StandardAttack : Attack
+{
+    public StandardAttack(string name) : base(name) { }
+}
+
+
+// Defines all of the different types of attacks that characters can perform
+public enum AttackType { Standard }
 
 
 /// <summary>
@@ -132,8 +169,9 @@ public abstract class Player
         Party = party;
     }
 
-    public abstract void TakeTurn(Character character);
-    public abstract Actions SelectAction();
+    public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer);
+    protected abstract ActionType SelectAction();
+    public abstract (AttackType, Character) PerformAttack(Party enemyParty);
 }
 
 
@@ -141,12 +179,17 @@ public class HumanPlayer : Player
 {
     public HumanPlayer(Party party) : base(party) { }
 
-    public override void TakeTurn(Character character)
+    public override void TakeTurn(Character currentCharacter, Player enemyPlayer)
     {
         throw new NotImplementedException();
     }
 
-    public override Actions SelectAction()
+    protected override ActionType SelectAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override (AttackType, Character) PerformAttack(Party enemyParty)
     {
         throw new NotImplementedException();
     }
@@ -157,16 +200,32 @@ public class ComputerPlayer : Player
 {
     public ComputerPlayer(Party party) : base(party) { }
 
-    public override void TakeTurn(Character character)
+    public override void TakeTurn(Character currentCharacter, Player enemyPlayer)
     {
         Thread.Sleep(500);
-        Actions action = SelectAction();
-        character.PerformAction(action);
+        ActionType action = SelectAction();
+        currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
     }
 
-    public override Actions SelectAction()
+    protected override ActionType SelectAction()
     {
-        return Actions.Nothing;
+        return ActionType.Attack;
+    }
+
+    public override (AttackType, Character) PerformAttack(Party enemyParty)
+    {
+        int enemyPartySize = enemyParty.Characters.Count;
+        int randomIndex = new Random().Next(enemyPartySize);
+        Character attackTarget = enemyParty.Characters[randomIndex];
+
+        AttackType attackType = SelectAttack();
+
+        return (attackType, attackTarget);
+    }
+
+    public AttackType SelectAttack()
+    {
+        return AttackType.Standard;
     }
 }
 
@@ -188,4 +247,4 @@ public class Party
 
 
 // Enumeration with all of the possible actions that a character can take
-public enum Actions { Nothing }
+public enum ActionType { Nothing, Attack }
