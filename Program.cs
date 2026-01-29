@@ -36,6 +36,15 @@ public class Game
     public void PlayGame()
     {
         _battle.Play();
+
+        if (_player1.Party.Characters.Count > 0)
+        {
+            Console.WriteLine("The heroes won! The Uncoded One's reign is finally over!");
+        }
+        else
+        {
+            Console.WriteLine("The heroes lost! The Uncoded One's forces have prevailed.");
+        }
     }
 }
 
@@ -48,16 +57,18 @@ public class Battle
 {
     private readonly Player _player1;
     private readonly Player _player2;
+    private bool _battleIsOver;
 
     public Battle(Player player1, Player player2)
     {
         _player1 = player1;
         _player2 = player2;
+        _battleIsOver = false;
     }
 
     public void Play()
     {
-        while (true)
+        while (!_battleIsOver)
         {
             PlayRound();
         }
@@ -67,6 +78,8 @@ public class Battle
     {
         Console.WriteLine("Player 1");
         TakePlayerTurn(currentPlayer: _player1, enemyPlayer: _player2);
+
+        if (_battleIsOver) return;
 
         Console.WriteLine("Player 2");
         TakePlayerTurn(currentPlayer: _player2, enemyPlayer: _player1);
@@ -79,6 +92,13 @@ public class Battle
             Console.WriteLine($"It is {character.Name}'s turn...");
             currentPlayer.TakeTurn(character, enemyPlayer);
             Console.WriteLine();
+
+            // Check to see if either player's party has been completely defeated
+            if (_player1.Party.Characters.Count == 0 || _player2.Party.Characters.Count == 0)
+            {
+                _battleIsOver = true;
+                return;
+            }
         }
     }
 }
@@ -127,6 +147,12 @@ public abstract class Character
                 // Display the results of having performed the attack
                 Console.WriteLine($"{attack.Name} dealt {attack.Damage} damage to {attackTarget.Name}.");
                 Console.WriteLine($"{attackTarget.Name} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+
+                if (attackTarget.CurrentHP == 0)
+                {
+                    Console.WriteLine($"{attackTarget.Name} has been defeated!");
+                    enemyPlayer.Party.RemoveFromParty(attackTarget);
+                }
 
                 break;
         }
@@ -283,6 +309,11 @@ public class Party
     public Party(params List<Character> characters)
     {
         _characters = characters;
+    }
+
+    public void RemoveFromParty(Character character)
+    {
+        if (_characters.Contains(character)) _characters.Remove(character);
     }
 }
 
