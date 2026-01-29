@@ -87,14 +87,18 @@ public class Battle
 /// <summary>
 /// A character in the game that is controlled by a player or the computer.
 /// </summary>
-public class Character
+public abstract class Character
 {
     public string Name { get; }
+    public int MaxHP { get; }
+    public int CurrentHP { get; private set; }
     protected Dictionary<AttackType, Attack> _attacks;
 
-    public Character(string name)
+    public Character(string name, int maxHP)
     {
         Name = name.ToUpper();
+        MaxHP = maxHP;
+        CurrentHP = maxHP;
         _attacks = new ();
     }
 
@@ -107,27 +111,49 @@ public class Character
                 break;
             case ActionType.Attack:
                 (AttackType attackType, Character attackTarget) = currentPlayer.PerformAttack(enemyPlayer.Party);
-                Console.WriteLine($"{Name} used {_attacks[attackType].Name} on {attackTarget.Name}");
+
+                // Get reference to attack object of the chosen attack type.
+                // This reference will be used to get the attack data for the attack
+                Attack attack = _attacks[attackType];
+
+                Console.WriteLine($"{Name} used {attack.Name} on {attackTarget.Name}.");
+
+                // The damage that an attack deals can vary per turn. It should be calculated
+                // each time the attack is used during a turn
+                attack.CalculateDamage(character: this);
+
+                DealDamage(attack.Damage, attackTarget);
+
+                // Display the results of having performed the attack
+                Console.WriteLine($"{attack.Name} dealt {attack.Damage} damage to {attackTarget.Name}.");
+                Console.WriteLine($"{attackTarget.Name} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+
                 break;
         }
+    }
+
+    protected void DealDamage(int damage, Character attackTarget)
+    {
+        if (attackTarget.CurrentHP - damage <= 0) attackTarget.CurrentHP = 0;
+        else attackTarget.CurrentHP -= damage;
     }
 }
 
 
 public class Skeleton : Character
 {
-    public Skeleton() : base("Skeleton")
+    public Skeleton() : base("Skeleton", maxHP: 5)
     {
-        _attacks.Add(AttackType.Standard, new StandardAttack("Bone Crunch"));
+        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Bone Crunch"));
     }
 }
 
 
 public class TrueProgrammer : Character
 {
-    public TrueProgrammer(string name) : base(name)
+    public TrueProgrammer(string name) : base(name, maxHP: 25)
     {
-        _attacks.Add(AttackType.Standard, new StandardAttack("Punch"));
+        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Punch"));
     }
 }
 
@@ -139,17 +165,32 @@ public class TrueProgrammer : Character
 public abstract class Attack
 {
     public string Name { get; }
+    public int Damage { get; protected set; }
 
     public Attack(string name)
     {
         Name = name.ToUpper();
     }
+
+    public abstract int CalculateDamage(Character character);
 }
 
 
 public class StandardAttack : Attack
 {
     public StandardAttack(string name) : base(name) { }
+
+    public override int CalculateDamage(Character character)
+    {
+        Damage = character switch
+        {
+            Skeleton       => new Random().Next(2),
+            TrueProgrammer => 1,
+            _              => 0
+        };
+
+        return Damage;
+    }
 }
 
 
