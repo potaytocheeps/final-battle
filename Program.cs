@@ -24,26 +24,65 @@ public class Game
 {
     private readonly Player _player1;
     private readonly Player _player2;
-    private readonly Battle _battle;
+    private readonly List<Party> _enemyBattleParties;
+    private Battle _battle;
 
     public Game(string name)
     {
         _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
-        _player2 = new ComputerPlayer(new Party(new Skeleton()));
+        _enemyBattleParties = [new Party(new Skeleton()), new Party(new Skeleton(1), new Skeleton(2))];
+        _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
         _battle = new Battle(player1: _player1, player2: _player2);
     }
 
     public void PlayGame()
     {
-        _battle.Play();
+        int currentBattleIndex = 0;
 
-        if (_player1.Party.Characters.Count > 0)
+        while (true)
         {
-            Console.WriteLine("The heroes won! The Uncoded One's reign is finally over!");
+            // Display current battle information
+            Console.WriteLine("---------------------------------------------");
+            Console.Write($"Battle {currentBattleIndex + 1}: ");
+            DisplayPlayerParty(_player1);
+            Console.Write(" vs. ");
+            DisplayPlayerParty(_player2);
+            Console.WriteLine("\n---------------------------------------------\n");
+
+            _battle.Play();
+
+            // End game if hero party was defeated during this current battle
+            if (_player1.Party.Characters.Count == 0)
+            {
+                Console.WriteLine("The heroes lost! The Uncoded One's forces have prevailed.");
+                return;
+            }
+
+            currentBattleIndex++;
+
+            if (currentBattleIndex >= _enemyBattleParties.Count) break; // End game if there are no more battles left
+            else
+            {
+                // Continue to next battle
+                _player2.SetParty(_enemyBattleParties[currentBattleIndex]);
+                _battle = new Battle(player1: _player1, player2: _player2);
+            }
         }
-        else
+
+        // Hero party emerged victorious from all battles
+        Console.WriteLine("The heroes won! The Uncoded One's reign is finally over!");
+    }
+
+    private void DisplayPlayerParty(Player player)
+    {
+        int playerPartySize = player.Party.Characters.Count;
+
+        for (int index = 0; index < playerPartySize; index++)
         {
-            Console.WriteLine("The heroes lost! The Uncoded One's forces have prevailed.");
+            string characterName = player.Party.Characters[index].Name;
+
+            if (index >= playerPartySize - 1) Console.Write(characterName); // This is the last character in the party
+            else Console.Write(characterName + ", ");
         }
     }
 }
@@ -172,6 +211,11 @@ public class Skeleton : Character
     {
         _attacks.Add(AttackType.Standard, new StandardAttack(name: "Bone Crunch"));
     }
+
+    public Skeleton(int number) : base($"Skeleton {number}", maxHP: 5)
+    {
+        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Bone Crunch"));
+    }
 }
 
 
@@ -229,7 +273,7 @@ public enum AttackType { Standard }
 /// </summary>
 public abstract class Player
 {
-    public Party Party { get; }
+    public Party Party { get; private set; }
 
     public Player(Party party)
     {
@@ -239,6 +283,11 @@ public abstract class Player
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer);
     protected abstract ActionType SelectAction();
     public abstract (AttackType, Character) PerformAttack(Party enemyParty);
+
+    public void SetParty(Party party)
+    {
+        Party = party;
+    }
 }
 
 
