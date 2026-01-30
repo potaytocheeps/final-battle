@@ -30,7 +30,12 @@ public class Game
     public Game(string name)
     {
         _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
-        _enemyBattleParties = [new Party(new Skeleton()), new Party(new Skeleton(1), new Skeleton(2))];
+        _enemyBattleParties =
+            [
+                new Party(new Skeleton()), // Battle 1
+                new Party(new Skeleton(1), new Skeleton(2)), // Battle 2
+                new Party(new TheUncodedOne()) // Battle 3
+            ];
         _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
         _battle = new Battle(player1: _player1, player2: _player2);
     }
@@ -228,6 +233,15 @@ public class TrueProgrammer : Character
 }
 
 
+public class TheUncodedOne : Character
+{
+    public TheUncodedOne() : base("The Uncoded One", maxHP: 15)
+    {
+        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Unraveling"));
+    }
+}
+
+
 /// <summary>
 /// Defines characteristics of the different attacks that a character can
 /// perform against enemy characters.
@@ -256,6 +270,7 @@ public class StandardAttack : Attack
         {
             Skeleton       => new Random().Next(2),
             TrueProgrammer => 1,
+            TheUncodedOne  => new Random().Next(3),
             _              => 0
         };
 
