@@ -29,7 +29,7 @@ public class Game
 
     public Game(string name)
     {
-        _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
+        _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
         _enemyBattleParties =
             [
                 new Party(new Skeleton()), // Battle 1
@@ -157,6 +157,7 @@ public abstract class Character
     public int MaxHP { get; }
     public int CurrentHP { get; private set; }
     protected Dictionary<AttackType, Attack> _attacks;
+    public IReadOnlyDictionary<AttackType, Attack> Attacks => _attacks;
 
     public Character(string name, int maxHP)
     {
@@ -174,7 +175,7 @@ public abstract class Character
                 Console.WriteLine($"{Name} did {action.ToString().ToUpper()}");
                 break;
             case ActionType.Attack:
-                (AttackType attackType, Character attackTarget) = currentPlayer.PerformAttack(enemyPlayer.Party);
+                (AttackType attackType, Character attackTarget) = currentPlayer.PerformAttack(currentCharacter: this, enemyPlayer.Party);
 
                 // Get reference to attack object of the chosen attack type.
                 // This reference will be used to get the attack data for the attack
@@ -297,7 +298,9 @@ public abstract class Player
 
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer);
     protected abstract ActionType SelectAction();
-    public abstract (AttackType, Character) PerformAttack(Party enemyParty);
+    public abstract (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty);
+    protected abstract AttackType SelectAttack(Character currentCharacter);
+    protected abstract Character SelectAttackTarget(Party enemyParty);
 
     public void SetParty(Party party)
     {
@@ -312,17 +315,113 @@ public class HumanPlayer : Player
 
     public override void TakeTurn(Character currentCharacter, Player enemyPlayer)
     {
-        throw new NotImplementedException();
+        ActionType action = SelectAction();
+        currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
     }
 
     protected override ActionType SelectAction()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"""
+            1 - Attack
+            2 - Do Nothing
+            """);
+
+        while (true)
+        {
+            Console.Write("What do you want to do? ");
+
+            string? choice = Console.ReadLine()?.ToLower();
+
+            if (string.IsNullOrWhiteSpace(choice)) continue;
+
+            (ActionType actionType, bool success) = choice switch
+            {
+                "1" or "attack"                  => (ActionType.Attack, true),
+                "2" or "do nothing" or "nothing" => (ActionType.Nothing, true),
+                _                                => (ActionType.Nothing, false)
+            };
+
+            if (success) return actionType;
+            else Console.WriteLine("Invalid input. Please select one of the available options.");
+        }
     }
 
-    public override (AttackType, Character) PerformAttack(Party enemyParty)
+    public override (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty)
     {
-        throw new NotImplementedException();
+        AttackType attackType = SelectAttack(currentCharacter);
+        Character attackTarget = SelectAttackTarget(enemyParty);
+
+        return (attackType, attackTarget);
+    }
+
+    protected override AttackType SelectAttack(Character currentCharacter)
+    {
+        if (currentCharacter.Attacks.Count == 1) return currentCharacter.Attacks.First().Key;
+
+        string standardAttackName = currentCharacter.Attacks[AttackType.Standard].Name;
+
+        Console.WriteLine($"""
+            1 - Standard Attack ({standardAttackName})
+            """);
+
+        while (true)
+        {
+            Console.Write("Select your attack: ");
+
+            string? choice = Console.ReadLine()?.ToLower();
+
+            if (string.IsNullOrWhiteSpace(choice)) continue;
+
+            for (int index = 0; index < currentCharacter.Attacks.Count; index++)
+            {
+                string attackName = currentCharacter.Attacks.ElementAt(index).Value.Name.ToLower();
+
+                if (choice == (index + 1).ToString() ||
+                    choice == "standard" ||
+                    choice == "standard attack" ||
+                    choice == attackName)
+                {
+                    return currentCharacter.Attacks.ElementAt(index).Key;
+                }
+            }
+
+            Console.WriteLine("Invalid input. Please select one of the available options.");
+            continue;
+        }
+    }
+
+    protected override Character SelectAttackTarget(Party enemyParty)
+    {
+        if (enemyParty.Characters.Count == 1) return enemyParty.Characters.First();
+
+        int characterNumber = 1;
+        foreach (Character character in enemyParty.Characters)
+        {
+            Console.WriteLine($"""
+                {characterNumber} - {character.Name}
+                """);
+
+            characterNumber++;
+        }
+
+        while (true)
+        {
+            Console.Write("Select the target: ");
+
+            string? choice = Console.ReadLine()?.ToLower();
+
+            if (string.IsNullOrWhiteSpace(choice)) continue;
+
+            for (int index = 0; index < enemyParty.Characters.Count; index++)
+            {
+                Character character = enemyParty.Characters[index];
+
+                if (choice == (index + 1).ToString() || choice == character.Name.ToLower()) return character;
+            }
+
+            Console.WriteLine("Invalid input. Please select one of the available options.");
+            continue;
+        }
     }
 }
 
@@ -343,20 +442,24 @@ public class ComputerPlayer : Player
         return ActionType.Attack;
     }
 
-    public override (AttackType, Character) PerformAttack(Party enemyParty)
+    public override (AttackType, Character) PerformAttack(Character _, Party enemyParty)
     {
-        int enemyPartySize = enemyParty.Characters.Count;
-        int randomIndex = new Random().Next(enemyPartySize);
-        Character attackTarget = enemyParty.Characters[randomIndex];
-
-        AttackType attackType = SelectAttack();
+        Character attackTarget = SelectAttackTarget(enemyParty);
+        AttackType attackType = SelectAttack(_);
 
         return (attackType, attackTarget);
     }
 
-    public AttackType SelectAttack()
+    protected override AttackType SelectAttack(Character _)
     {
         return AttackType.Standard;
+    }
+
+    protected override Character SelectAttackTarget(Party enemyParty)
+    {
+        int enemyPartySize = enemyParty.Characters.Count;
+        int randomIndex = new Random().Next(enemyPartySize);
+        return enemyParty.Characters[randomIndex];
     }
 }
 
