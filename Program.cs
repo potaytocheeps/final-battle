@@ -1,6 +1,8 @@
-﻿string playerName = AskUserForInput("Enter the name for the True Programmer: ");
+﻿GameplayMode gameplayMode = SelectGameplayMode();
+Console.WriteLine();
+string playerName = AskUserForInput("Enter the name for the True Programmer: ");
 
-Game game = new Game(playerName);
+Game game = new Game(playerName, gameplayMode);
 game.PlayGame();
 
 
@@ -17,6 +19,29 @@ string AskUserForInput(string question)
 }
 
 
+GameplayMode SelectGameplayMode()
+{
+    Console.WriteLine("""
+    This game can be played in the following ways:
+        1 - Human vs. Computer
+        2 - Human vs. Human
+        3 - Computer vs. Computer
+    """);
+
+    while (true)
+    {
+        string input = AskUserForInput("Make your selection: ");
+
+        if (int.TryParse(input, out int choice))
+        {
+            if (choice >= 1 && choice <= 3) return (GameplayMode)choice;
+        }
+
+        Console.WriteLine("Invalid input. Please enter one of the available choices (1-3).");
+    }
+}
+
+
 /// <summary>
 /// Contains the main logic for the whole game.
 /// </summary>
@@ -27,16 +52,35 @@ public class Game
     private readonly List<Party> _enemyBattleParties;
     private Battle _battle;
 
-    public Game(string name)
+    public Game(string name, GameplayMode gameplayMode)
     {
-        _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
         _enemyBattleParties =
             [
                 new Party(new Skeleton()), // Battle 1
                 new Party(new Skeleton(1), new Skeleton(2)), // Battle 2
                 new Party(new TheUncodedOne()) // Battle 3
             ];
-        _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
+
+        // Initialize variables to prevent warning of potential null values
+        _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
+        _player2 = new ComputerPlayer(new Party(new TheUncodedOne()));
+
+        switch (gameplayMode)
+        {
+            case GameplayMode.HumanVsComputer:
+                _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
+                _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
+                break;
+            case GameplayMode.HumanVsHuman:
+                _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
+                _player2 = new HumanPlayer(_enemyBattleParties[0]);
+                break;
+            case GameplayMode.ComputerVsComputer:
+                _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
+                _player2 = new ComputerPlayer(_enemyBattleParties[0]);
+                break;
+        }
+
         _battle = new Battle(player1: _player1, player2: _player2);
     }
 
@@ -91,6 +135,10 @@ public class Game
         }
     }
 }
+
+
+// Defines the different gameplay modes the player can choose for a match of the game
+public enum GameplayMode { HumanVsComputer = 1, HumanVsHuman = 2, ComputerVsComputer = 3 }
 
 
 /// <summary>
