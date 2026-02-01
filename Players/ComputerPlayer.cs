@@ -8,8 +8,13 @@ public class ComputerPlayer : Player
 {
     public ComputerPlayer(Party party) : base(party) { }
 
-    public override void TakeTurn(Character currentCharacter, Player enemyPlayer)
+    public override void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound)
     {
+        if (_playerNumber == 1) Battle.DisplayBattleStatus(player1Party: Party, player2Party: enemyPlayer.Party, currentCharacter, currentRound);
+        else Battle.DisplayBattleStatus(player1Party: enemyPlayer.Party, player2Party: Party, currentCharacter, currentRound);
+
+        ColoredConsole.WriteLine($"Player {_playerNumber}");
+        ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
         Thread.Sleep(500);
         ActionType action = SelectAction();
         currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);

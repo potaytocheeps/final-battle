@@ -16,4 +16,20 @@ public class Party
     {
         if (_characters.Contains(character)) _characters.Remove(character);
     }
+
+    public void DisplayPartyInfo(Character currentCharacter, bool addPadding = false)
+    {
+        foreach (Character character in _characters)
+        {
+            // Padding is added only to player 2's party, to keep it aligned to the right
+            // side of the 'vs.' line in the battle status information
+            if (addPadding) Console.Write("".PadRight(30));
+
+            // The character whose turn it is will be colored differently to distinguish it from the others.
+            // This creates a visual difference to show that this is the currently selected character
+            if (character == currentCharacter) ColoredConsole.Write($"{character}", ConsoleColor.Yellow);
+            else ColoredConsole.Write($"{character}");
+            ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP})");
+        }
+    }
 }

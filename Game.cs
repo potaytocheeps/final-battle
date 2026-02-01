@@ -59,7 +59,7 @@ public class Game
             // End game if hero party was defeated during this current battle
             if (_player1.Party.Characters.Count == 0)
             {
-                Console.WriteLine("The heroes lost! The Uncoded One's forces have prevailed.");
+                ColoredConsole.WriteLine("The heroes lost! The Uncoded One's forces have prevailed.", ConsoleColor.DarkRed);
                 return;
             }
 
@@ -75,7 +75,7 @@ public class Game
         }
 
         // Hero party emerged victorious from all battles
-        Console.WriteLine("The heroes won! The Uncoded One's reign is finally over!");
+        ColoredConsole.WriteLine("The heroes won! The Uncoded One's reign is finally over!", ConsoleColor.Green);
     }
 
     private void DisplayPlayerParty(Player player)

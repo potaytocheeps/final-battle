@@ -12,5 +12,7 @@ public abstract class Attack
         Name = name.ToUpper();
     }
 
+    public override string ToString() => Name;
+
     public abstract int CalculateDamage(Character character);
 }

@@ -1,43 +1,30 @@
 ﻿GameplayMode gameplayMode = SelectGameplayMode();
 Console.WriteLine();
-string playerName = AskUserForInput("Enter the name for the True Programmer: ");
+string playerName = ColoredConsole.PromptUser("Enter the name for the True Programmer: ", ConsoleColor.Gray);
 
 Game game = new Game(playerName, gameplayMode);
 game.PlayGame();
 
 
-string AskUserForInput(string question)
-{
-    while (true)
-    {
-        Console.Write(question);
-        string? input = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(input)) continue;
-        else return input;
-    }
-}
-
-
 GameplayMode SelectGameplayMode()
 {
-    Console.WriteLine("""
+    ColoredConsole.WriteLine("""
     This game can be played in the following ways:
         1 - Human vs. Computer
         2 - Human vs. Human
         3 - Computer vs. Computer
-    """);
+    """, ConsoleColor.Gray);
 
     while (true)
     {
-        string input = AskUserForInput("Make your selection: ");
+        string input = ColoredConsole.PromptUser("Make your selection: ", ConsoleColor.Gray);
 
         if (int.TryParse(input, out int choice))
         {
             if (choice >= 1 && choice <= 3) return (GameplayMode)choice;
         }
 
-        Console.WriteLine("Invalid input. Please enter one of the available choices (1-3).");
+        ColoredConsole.WriteLine("Invalid input. Please enter one of the available choices (1-3).", ConsoleColor.DarkRed);
     }
 }
 

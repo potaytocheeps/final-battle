@@ -7,26 +7,28 @@ public class HumanPlayer : Player
 {
     public HumanPlayer(Party party) : base(party) { }
 
-    public override void TakeTurn(Character currentCharacter, Player enemyPlayer)
+    public override void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound)
     {
+        if (_playerNumber == 1) Battle.DisplayBattleStatus(player1Party: Party, player2Party: enemyPlayer.Party, currentCharacter, currentRound);
+        else Battle.DisplayBattleStatus(player1Party: enemyPlayer.Party, player2Party: Party, currentCharacter, currentRound);
+
+        ColoredConsole.WriteLine($"Player {_playerNumber}");
+        ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
         ActionType action = SelectAction();
         currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
     }
 
     protected override ActionType SelectAction()
     {
-        Console.WriteLine($"""
+        ColoredConsole.WriteLine($"""
             1 - Attack
             2 - Do Nothing
-            """);
+            """, ConsoleColor.Gray);
 
         while (true)
         {
-            Console.Write("What do you want to do? ");
-
-            string? choice = Console.ReadLine()?.ToLower();
-
-            if (string.IsNullOrWhiteSpace(choice)) continue;
+            string choice = ColoredConsole.PromptUser("What do you want to do? ", ConsoleColor.Gray).ToLower();
+            choice = choice.ToLower();
 
             (ActionType actionType, bool success) = choice switch
             {
@@ -36,7 +38,7 @@ public class HumanPlayer : Player
             };
 
             if (success) return actionType;
-            else Console.WriteLine("Invalid input. Please select one of the available options.");
+            else ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
         }
     }
 
@@ -54,17 +56,13 @@ public class HumanPlayer : Player
 
         string standardAttackName = currentCharacter.Attacks[AttackType.Standard].Name;
 
-        Console.WriteLine($"""
+        ColoredConsole.WriteLine($"""
             1 - Standard Attack ({standardAttackName})
-            """);
+            """, ConsoleColor.Gray);
 
         while (true)
         {
-            Console.Write("Select your attack: ");
-
-            string? choice = Console.ReadLine()?.ToLower();
-
-            if (string.IsNullOrWhiteSpace(choice)) continue;
+            string choice = ColoredConsole.PromptUser("Select your attack: ", ConsoleColor.Gray).ToLower();
 
             for (int index = 0; index < currentCharacter.Attacks.Count; index++)
             {
@@ -79,7 +77,7 @@ public class HumanPlayer : Player
                 }
             }
 
-            Console.WriteLine("Invalid input. Please select one of the available options.");
+            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
             continue;
         }
     }
@@ -91,20 +89,16 @@ public class HumanPlayer : Player
         int characterNumber = 1;
         foreach (Character character in enemyParty.Characters)
         {
-            Console.WriteLine($"""
+            ColoredConsole.WriteLine($"""
                 {characterNumber} - {character.Name}
-                """);
+                """, ConsoleColor.Gray);
 
             characterNumber++;
         }
 
         while (true)
         {
-            Console.Write("Select the target: ");
-
-            string? choice = Console.ReadLine()?.ToLower();
-
-            if (string.IsNullOrWhiteSpace(choice)) continue;
+            string choice = ColoredConsole.PromptUser("Select the target: ", ConsoleColor.Gray).ToLower();
 
             for (int index = 0; index < enemyParty.Characters.Count; index++)
             {
@@ -113,7 +107,7 @@ public class HumanPlayer : Player
                 if (choice == (index + 1).ToString() || choice == character.Name.ToLower()) return character;
             }
 
-            Console.WriteLine("Invalid input. Please select one of the available options.");
+            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
             continue;
         }
     }

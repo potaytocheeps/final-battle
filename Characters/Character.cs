@@ -31,7 +31,7 @@ public abstract class Character
                 // This reference will be used to get the attack data for the attack
                 Attack attack = _attacks[attackType];
 
-                Console.WriteLine($"{Name} used {attack.Name} on {attackTarget.Name}.");
+                Console.WriteLine($"{Name} used {attack} on {attackTarget}.");
 
                 // The damage that an attack deals can vary per turn. It should be calculated
                 // each time the attack is used during a turn
@@ -40,12 +40,12 @@ public abstract class Character
                 DealDamage(attack.Damage, attackTarget);
 
                 // Display the results of having performed the attack
-                Console.WriteLine($"{attack.Name} dealt {attack.Damage} damage to {attackTarget.Name}.");
-                Console.WriteLine($"{attackTarget.Name} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+                Console.WriteLine($"{attack} dealt {attack.Damage} damage to {attackTarget}.");
+                Console.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
 
                 if (attackTarget.CurrentHP == 0)
                 {
-                    Console.WriteLine($"{attackTarget.Name} has been defeated!");
+                    ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
                     enemyPlayer.Party.RemoveFromParty(attackTarget);
                 }
 
@@ -58,4 +58,6 @@ public abstract class Character
         if (attackTarget.CurrentHP - damage <= 0) attackTarget.CurrentHP = 0;
         else attackTarget.CurrentHP -= damage;
     }
+
+    public override string ToString() => Name;
 }
