@@ -44,4 +44,9 @@ public class ComputerPlayer : Player
         int randomIndex = new Random().Next(enemyPartySize);
         return enemyParty.Characters[randomIndex];
     }
+
+    public override Item SelectItem()
+    {
+        throw new NotImplementedException();
+    }
 }

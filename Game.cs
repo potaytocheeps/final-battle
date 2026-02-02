@@ -10,29 +10,33 @@ public class Game
 
     public Game(string name, GameplayMode gameplayMode)
     {
+        List<Character> playerParty = [new TrueProgrammer(name)];
+        List<Item> heroPartyItems = [new HealthPotion(), new HealthPotion(), new HealthPotion()];
+        List<Item> enemyPartyItems = [new HealthPotion()];
+
         _enemyBattleParties =
             [
-                new Party(new Skeleton()), // Battle 1
-                new Party(new Skeleton(1), new Skeleton(2)), // Battle 2
-                new Party(new TheUncodedOne()) // Battle 3
+                new Party(characters: [new Skeleton()], items: enemyPartyItems), // Battle 1
+                new Party(characters: [new Skeleton(1), new Skeleton(2)], items: enemyPartyItems), // Battle 2
+                new Party(characters: [new TheUncodedOne()], items: enemyPartyItems) // Battle 3
             ];
 
         // Initialize variables to prevent warning of potential null values
-        _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
-        _player2 = new ComputerPlayer(new Party(new TheUncodedOne()));
+        _player1 = new ComputerPlayer(new Party(characters: playerParty, items: heroPartyItems));
+        _player2 = new ComputerPlayer(new Party(characters: [new TheUncodedOne()], items: enemyPartyItems));
 
         switch (gameplayMode)
         {
             case GameplayMode.HumanVsComputer:
-                _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
+                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems));
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
                 break;
             case GameplayMode.HumanVsHuman:
-                _player1 = new HumanPlayer(new Party(new TrueProgrammer(name)));
+                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems));
                 _player2 = new HumanPlayer(_enemyBattleParties[0]);
                 break;
             case GameplayMode.ComputerVsComputer:
-                _player1 = new ComputerPlayer(new Party(new TrueProgrammer(name)));
+                _player1 = new ComputerPlayer(new Party(characters: playerParty, items: heroPartyItems));
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]);
                 break;
         }

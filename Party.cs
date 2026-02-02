@@ -5,11 +5,14 @@
 public class Party
 {
     private List<Character> _characters;
+    private List<Item> _items;
     public IReadOnlyList<Character> Characters => _characters;
+    public IReadOnlyList<Item> Items => _items;
 
-    public Party(params List<Character> characters)
+    public Party(List<Character> characters, List<Item> items)
     {
         _characters = characters;
+        _items = items;
     }
 
     public void RemoveFromParty(Character character)
@@ -32,4 +35,17 @@ public class Party
             ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP})");
         }
     }
+
+    public void AddItemToInventory(Item item)
+    {
+        _items.Add(item);
+    }
+
+    public void RemoveItemFromInventory(Item item)
+    {
+        if (_items.Contains(item)) _items.Remove(item);
+    }
+
+    public int GetItemTypeCount<T>() => _items.OfType<T>().Count();
+    public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.GetType()).ToList();
 }

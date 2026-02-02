@@ -17,7 +17,7 @@ public abstract class Character
         _attacks = new ();
     }
 
-    public void PerformAction(Player currentPlayer, ActionType action, Player enemyPlayer)
+    public bool PerformAction(Player currentPlayer, ActionType action, Player enemyPlayer)
     {
         switch (action)
         {
@@ -50,13 +50,47 @@ public abstract class Character
                 }
 
                 break;
+            case ActionType.UseItem:
+                if (currentPlayer.Party.Items.Count <= 0) // There are no more items in party's inventory
+                {
+                    ColoredConsole.WriteLine("Inventory is empty.", ConsoleColor.DarkRed);
+                    return false; // Action could not be completed. Ask player to select an action again
+                }
+
+                Item item = currentPlayer.SelectItem();
+                UseItem(user: this, target: this, item);
+
+                currentPlayer.Party.RemoveItemFromInventory(item);
+                break;
         }
+
+        // Selected action was successfully performed
+        return true;
     }
 
     protected void DealDamage(int damage, Character attackTarget)
     {
         if (attackTarget.CurrentHP - damage <= 0) attackTarget.CurrentHP = 0;
         else attackTarget.CurrentHP -= damage;
+    }
+
+    protected void UseItem(Character user, Character target, Item item)
+    {
+        switch (item)
+        {
+            case HealthPotion potion:
+                Heal(target, potion.HealAmount);
+                ColoredConsole.WriteLine($"{user} used {potion}.");
+                ColoredConsole.WriteLine($"{potion} heals {target} for {potion.HealAmount} HP.");
+                ColoredConsole.WriteLine($"{target} is now at {CurrentHP}/{MaxHP} HP.");
+                break;
+        }
+    }
+
+    protected void Heal(Character healTarget, int healAmount)
+    {
+        if (healTarget.CurrentHP + healAmount > healTarget.MaxHP) healTarget.CurrentHP = healTarget.MaxHP;
+        else healTarget.CurrentHP += healAmount;
     }
 
     public override string ToString() => Name;

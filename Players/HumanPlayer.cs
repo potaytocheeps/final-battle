@@ -14,15 +14,22 @@ public class HumanPlayer : Player
 
         ColoredConsole.WriteLine($"Player {_playerNumber}");
         ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
-        ActionType action = SelectAction();
-        currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
+
+        while (true)
+        {
+            ActionType action = SelectAction();
+            bool actionWasSuccessful = currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
+
+            if (actionWasSuccessful) break;
+        }
     }
 
     protected override ActionType SelectAction()
     {
         ColoredConsole.WriteLine($"""
             1 - Attack
-            2 - Do Nothing
+            2 - Use Item
+            3 - Do Nothing
             """, ConsoleColor.Gray);
 
         while (true)
@@ -32,9 +39,10 @@ public class HumanPlayer : Player
 
             (ActionType actionType, bool success) = choice switch
             {
-                "1" or "attack"                  => (ActionType.Attack, true),
-                "2" or "do nothing" or "nothing" => (ActionType.Nothing, true),
-                _                                => (ActionType.Nothing, false)
+                "1" or "attack"                      => (ActionType.Attack, true),
+                "2" or "use item" or "use" or "item" => (ActionType.UseItem, true),
+                "3" or "do nothing" or "nothing"     => (ActionType.Nothing, true),
+                _                                    => (ActionType.Nothing, false)
             };
 
             if (success) return actionType;
@@ -111,11 +119,44 @@ public class HumanPlayer : Player
             continue;
         }
     }
+
+    public override Item SelectItem()
+    {
+        List<Item> uniqueItems = Party.GetListOfUniqueItemsInInventory();
+
+        int itemNumber = 1;
+        foreach (Item item in uniqueItems)
+        {
+            // Capitalize only the first letter of the item's name
+            string itemName = item.Name[0] + item.Name.Substring(1).ToLower();
+
+            ColoredConsole.WriteLine($"""
+                {itemNumber} - {itemName} ({Party.GetItemTypeCount<Item>()})
+                """, ConsoleColor.Gray);
+
+            itemNumber++;
+        }
+
+        while (true)
+        {
+            string choice = ColoredConsole.PromptUser("Select item: ", ConsoleColor.Gray).ToLower();
+
+            for (int index = 0; index < uniqueItems.Count; index++)
+            {
+                Item item = uniqueItems[index];
+
+                if (choice == (index + 1).ToString() || choice == item.Name.ToLower()) return item;
+            }
+
+            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
+            continue;
+        }
+    }
 }
 
 
 // Enumeration with all of the possible actions that a character can take
-public enum ActionType { Nothing, Attack }
+public enum ActionType { Nothing, Attack, UseItem }
 
 
 // Defines all of the different types of attacks that characters can perform
