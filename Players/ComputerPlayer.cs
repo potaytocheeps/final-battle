@@ -16,12 +16,23 @@ public class ComputerPlayer : Player
         ColoredConsole.WriteLine($"Player {_playerNumber}");
         ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
         Thread.Sleep(500);
-        ActionType action = SelectAction();
+        ActionType action = SelectAction(currentCharacter);
         currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
     }
 
-    protected override ActionType SelectAction()
+    protected override ActionType SelectAction(Character currentCharacter)
     {
+        if (Party.GetItemTypeCount<HealthPotion>() > 0)
+        {
+            bool characterHealthIsUnderHalf = currentCharacter.CurrentHP < Math.Ceiling((float)currentCharacter.MaxHP / 2);
+
+            if (characterHealthIsUnderHalf)
+            {
+                // There's a 25% chance that this character will use a potion
+                if (new Random().Next(4) == 0) return ActionType.UseItem;
+            }
+        }
+
         return ActionType.Attack;
     }
 
@@ -47,6 +58,6 @@ public class ComputerPlayer : Player
 
     public override Item SelectItem()
     {
-        throw new NotImplementedException();
+        return Party.Items.First();
     }
 }

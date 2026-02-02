@@ -17,14 +17,14 @@ public class HumanPlayer : Player
 
         while (true)
         {
-            ActionType action = SelectAction();
+            ActionType action = SelectAction(currentCharacter);
             bool actionWasSuccessful = currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
 
             if (actionWasSuccessful) break;
         }
     }
 
-    protected override ActionType SelectAction()
+    protected override ActionType SelectAction(Character _)
     {
         ColoredConsole.WriteLine($"""
             1 - Attack

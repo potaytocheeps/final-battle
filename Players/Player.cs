@@ -23,7 +23,7 @@ public abstract class Player
     }
 
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound);
-    protected abstract ActionType SelectAction();
+    protected abstract ActionType SelectAction(Character currentCharacter);
     public abstract (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty);
     protected abstract AttackType SelectAttack(Character currentCharacter);
     protected abstract Character SelectAttackTarget(Party enemyParty);
