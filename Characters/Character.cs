@@ -8,13 +8,17 @@ public abstract class Character
     public int CurrentHP { get; private set; }
     protected Dictionary<AttackType, Attack> _attacks;
     public IReadOnlyDictionary<AttackType, Attack> Attacks => _attacks;
+    public Gear? EquippedGear { get; private set; }
+    public bool HasGearEquipped { get; private set; }
 
-    public Character(string name, int maxHP)
+    public Character(string name, int maxHP, Gear? startingGear = null)
     {
         Name = name.ToUpper();
         MaxHP = maxHP;
         CurrentHP = maxHP;
         _attacks = new ();
+
+        if (startingGear != null) EquipGear(startingGear);
     }
 
     public bool PerformAction(Player currentPlayer, ActionType action, Player enemyPlayer)
@@ -35,7 +39,7 @@ public abstract class Character
 
                 // The damage that an attack deals can vary per turn. It should be calculated
                 // each time the attack is used during a turn
-                attack.CalculateDamage(character: this);
+                attack.CalculateDamage(attack);
 
                 DealDamage(attack.Damage, attackTarget);
 
@@ -61,6 +65,17 @@ public abstract class Character
                 UseItem(user: this, target: this, item);
 
                 currentPlayer.Party.RemoveItemFromInventory(item);
+                break;
+            case ActionType.Equip:
+                if (currentPlayer.Party.Gear.Count <= 0) // There is no gear in party's inventory
+                {
+                    ColoredConsole.WriteLine("No gear available.", ConsoleColor.DarkRed);
+                    return false; // Action could not be completed. Ask player to select an action again
+                }
+
+                Gear gear = currentPlayer.SelectGear();
+                EquipGear(currentPlayer, gear);
+                ColoredConsole.WriteLine($"{Name} equipped {gear.Name} and gained Special Attack: {gear.AttackProvided}");
                 break;
         }
 
@@ -91,6 +106,25 @@ public abstract class Character
     {
         if (healTarget.CurrentHP + healAmount > healTarget.MaxHP) healTarget.CurrentHP = healTarget.MaxHP;
         else healTarget.CurrentHP += healAmount;
+    }
+
+    protected void EquipGear(Player currentPlayer, Gear gearToEquip)
+    {
+        if (EquippedGear != null) // Character already has gear equipped
+        {
+            // Put previously equipped gear back into party's inventory
+            currentPlayer.Party.AddGearToInventory(EquippedGear);
+        }
+
+        EquipGear(gearToEquip);
+        currentPlayer.Party.RemoveGearFromInventory(gearToEquip);
+    }
+
+    protected void EquipGear(Gear gearToEquip)
+    {
+        EquippedGear = gearToEquip;
+        HasGearEquipped = true;
+        _attacks[gearToEquip.AttackProvided.AttackType] = gearToEquip.AttackProvided;
     }
 
     public override string ToString() => Name;

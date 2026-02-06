@@ -6,13 +6,27 @@ public class Party
 {
     private List<Character> _characters;
     private List<Item> _items;
+    private List<Gear> _gear;
     public IReadOnlyList<Character> Characters => _characters;
     public IReadOnlyList<Item> Items => _items;
+    public IReadOnlyList<Gear> Gear => _gear;
 
-    public Party(List<Character> characters, List<Item> items)
+    public Party(List<Character> characters)
+    {
+        _characters = characters;
+        _items = new List<Item>();
+        _gear = new List<Gear>();
+    }
+
+    public Party(List<Character> characters, List<Item> items) : this(characters)
     {
         _characters = characters;
         _items = items;
+    }
+
+    public Party(List<Character> characters, List<Item> items, List<Gear> gear) : this(characters, items)
+    {
+        _gear = gear;
     }
 
     public void RemoveFromParty(Character character)
@@ -32,7 +46,10 @@ public class Party
             // This creates a visual difference to show that this is the currently selected character
             if (character == currentCharacter) ColoredConsole.Write($"{character}", ConsoleColor.Yellow);
             else ColoredConsole.Write($"{character}");
-            ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP})");
+
+            if (character.HasGearEquipped) ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP}) " +
+                                                                    $"({character.EquippedGear?.Name})");
+            else ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP})");
         }
     }
 
@@ -41,11 +58,30 @@ public class Party
         _items.Add(item);
     }
 
+    public void AddGearToInventory(Gear gear)
+    {
+        _gear.Add(gear);
+    }
+
     public void RemoveItemFromInventory(Item item)
     {
         if (_items.Contains(item)) _items.Remove(item);
     }
 
+    public void RemoveGearFromInventory(Gear gear)
+    {
+        if (_gear.Contains(gear)) _gear.Remove(gear);
+    }
+
     public int GetItemTypeCount<T>() => _items.OfType<T>().Count();
+
+    public int GetGearTypeCount(Gear gear)
+    {
+        if (_gear.Count == 0) return 0;
+
+        return _gear.FindAll((item) => item.GetType() == gear.GetType()).Count;
+    }
+
     public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.GetType()).ToList();
+    public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.GetType()).ToList();
 }

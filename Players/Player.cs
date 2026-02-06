@@ -28,4 +28,5 @@ public abstract class Player
     protected abstract AttackType SelectAttack(Character currentCharacter);
     protected abstract Character SelectAttackTarget(Party enemyParty);
     public abstract Item SelectItem();
+    public abstract Gear SelectGear();
 }

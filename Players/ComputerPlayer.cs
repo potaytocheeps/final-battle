@@ -33,20 +33,26 @@ public class ComputerPlayer : Player
             }
         }
 
+        if (Party.Gear.Count > 0 && !currentCharacter.HasGearEquipped)
+        {
+            if (new Random().Next(2) == 0) return ActionType.Equip;
+        }
+
         return ActionType.Attack;
     }
 
-    public override (AttackType, Character) PerformAttack(Character _, Party enemyParty)
+    public override (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty)
     {
         Character attackTarget = SelectAttackTarget(enemyParty);
-        AttackType attackType = SelectAttack(_);
+        AttackType attackType = SelectAttack(currentCharacter);
 
         return (attackType, attackTarget);
     }
 
-    protected override AttackType SelectAttack(Character _)
+    protected override AttackType SelectAttack(Character currentCharacter)
     {
-        return AttackType.Standard;
+        if (currentCharacter.Attacks.Count > 1) return AttackType.Special;
+        else return AttackType.Standard;
     }
 
     protected override Character SelectAttackTarget(Party enemyParty)
@@ -59,5 +65,10 @@ public class ComputerPlayer : Player
     public override Item SelectItem()
     {
         return Party.Items.First();
+    }
+
+    public override Gear SelectGear()
+    {
+        return Party.Gear.First();
     }
 }

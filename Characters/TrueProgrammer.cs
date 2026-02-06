@@ -5,6 +5,7 @@ public class TrueProgrammer : Character
 {
     public TrueProgrammer(string name) : base(name, maxHP: 25)
     {
-        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Punch"));
+        _attacks.Add(AttackType.Standard, new Punch());
+        EquipGear(new Sword());
     }
 }

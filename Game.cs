@@ -16,8 +16,8 @@ public class Game
 
         _enemyBattleParties =
             [
-                new Party(characters: [new Skeleton()], items: enemyPartyItems.ToList()), // Battle 1
-                new Party(characters: [new Skeleton(1), new Skeleton(2)], items: enemyPartyItems.ToList()), // Battle 2
+                new Party(characters: [new Skeleton(new Dagger())], items: enemyPartyItems.ToList()), // Battle 1
+                new Party(characters: [new Skeleton(1), new Skeleton(2)], items: enemyPartyItems.ToList(), gear: [new Dagger(), new Dagger()]), // Battle 2
                 new Party(characters: [new TheUncodedOne()], items: enemyPartyItems.ToList()) // Battle 3
             ];
 
@@ -28,7 +28,7 @@ public class Game
         switch (gameplayMode)
         {
             case GameplayMode.HumanVsComputer:
-                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList()));
+                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList(), [new Dagger(), new Dagger(), new Sword()]));
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
                 break;
             case GameplayMode.HumanVsHuman:

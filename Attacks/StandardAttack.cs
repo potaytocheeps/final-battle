@@ -3,16 +3,16 @@
 /// </summary>
 public class StandardAttack : Attack
 {
-    public StandardAttack(string name) : base(name) { }
+    public StandardAttack(string name) : base(name, AttackType.Standard) { }
 
-    public override int CalculateDamage(Character character)
+    public override int CalculateDamage(Attack attack)
     {
-        Damage = character switch
+        Damage = attack switch
         {
-            Skeleton       => new Random().Next(2),
-            TrueProgrammer => 1,
-            TheUncodedOne  => new Random().Next(3),
-            _              => 0
+            BoneCrunch => new Random().Next(2),
+            Punch      => 1,
+            Unraveling => new Random().Next(3),
+            _          => 0
         };
 
         return Damage;

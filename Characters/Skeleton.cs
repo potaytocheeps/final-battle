@@ -3,13 +3,13 @@
 /// </summary>
 public class Skeleton : Character
 {
-    public Skeleton() : base("Skeleton", maxHP: 5)
+    public Skeleton(Gear? startingGear = null) : base("Skeleton", maxHP: 5, startingGear)
     {
-        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Bone Crunch"));
+        _attacks.Add(AttackType.Standard, new BoneCrunch());
     }
 
-    public Skeleton(int number) : base($"Skeleton {number}", maxHP: 5)
+    public Skeleton(int number, Gear? startingGear = null) : base($"Skeleton {number}", maxHP: 5, startingGear)
     {
-        _attacks.Add(AttackType.Standard, new StandardAttack(name: "Bone Crunch"));
+        _attacks.Add(AttackType.Standard, new BoneCrunch());
     }
 }
