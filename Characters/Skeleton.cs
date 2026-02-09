@@ -5,11 +5,11 @@ public class Skeleton : Character
 {
     public Skeleton(Gear? startingGear = null) : base("Skeleton", maxHP: 5, startingGear)
     {
-        _attacks.Add(AttackType.Standard, new BoneCrunch());
+        _attacks.Insert(0, new BoneCrunch());
     }
 
     public Skeleton(int number, Gear? startingGear = null) : base($"Skeleton {number}", maxHP: 5, startingGear)
     {
-        _attacks.Add(AttackType.Standard, new BoneCrunch());
+        _attacks.Insert(0, new BoneCrunch());
     }
 }

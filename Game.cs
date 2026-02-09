@@ -13,50 +13,64 @@ public class Game
         List<Character> playerParty = [new TrueProgrammer(name)];
         List<Item> heroPartyItems = [new HealthPotion(), new HealthPotion(), new HealthPotion()];
         List<Item> enemyPartyItems = [new HealthPotion()];
+        Party defaultHeroParty = new Party
+        (
+            characters: playerParty,
+            startingItems: heroPartyItems,
+            startingGear: []
+        );
 
         _enemyBattleParties =
             [
-                new Party(characters: [new Skeleton(new Dagger())], items: enemyPartyItems.ToList()), // Battle 1
-                new Party(characters: [new Skeleton(1), new Skeleton(2)], items: enemyPartyItems.ToList(), gear: [new Dagger(), new Dagger()]), // Battle 2
-                new Party(characters: [new TheUncodedOne()], items: enemyPartyItems.ToList()) // Battle 3
+                new Party // Battle 1
+                (
+                    characters: [new Skeleton(new Dagger())],
+                    startingItems: enemyPartyItems,
+                    startingGear: []
+                ),
+                new Party // Battle 2
+                (
+                    characters: [new Skeleton(1), new Skeleton(2)],
+                    startingItems: enemyPartyItems,
+                    startingGear: [new Dagger(), new Dagger()]
+                ),
+                new Party // Battle 3
+                (
+                    characters: [new TheUncodedOne()],
+                    startingItems: enemyPartyItems,
+                    startingGear: new ()
+                )
             ];
-
-        // Initialize variables to prevent warning of potential null values
-        _player1 = new ComputerPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList()));
-        _player2 = new ComputerPlayer(new Party(characters: [new TheUncodedOne()], items: enemyPartyItems.ToList()));
 
         switch (gameplayMode)
         {
             case GameplayMode.HumanVsComputer:
-                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList(), [new Dagger(), new Dagger(), new Sword()]));
+                _player1 = new HumanPlayer(defaultHeroParty);
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
                 break;
             case GameplayMode.HumanVsHuman:
-                _player1 = new HumanPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList()));
+                _player1 = new HumanPlayer(defaultHeroParty);
                 _player2 = new HumanPlayer(_enemyBattleParties[0]);
                 break;
-            case GameplayMode.ComputerVsComputer:
-                _player1 = new ComputerPlayer(new Party(characters: playerParty, items: heroPartyItems.ToList()));
+            default:
+                _player1 = new ComputerPlayer(defaultHeroParty);
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]);
                 break;
         }
 
-        _battle = new Battle(player1: _player1, player2: _player2);
+        _battle = new Battle(_player1, _player2);
     }
 
     public void PlayGame()
     {
+        Console.Clear();
         int currentBattleIndex = 0;
 
         while (true)
         {
             // Display current battle information
-            Console.WriteLine("---------------------------------------------");
-            Console.Write($"Battle {currentBattleIndex + 1}: ");
-            DisplayPlayerParty(_player1);
-            Console.Write(" vs. ");
-            DisplayPlayerParty(_player2);
-            Console.WriteLine("\n---------------------------------------------\n");
+            ConsoleIOHandler.DisplayBattleInfo(_player1, _player2, battleNumber: currentBattleIndex + 1);
+            ConsoleIOHandler.WaitForPlayerConfirmation();
 
             _battle.Play();
 
@@ -74,24 +88,11 @@ public class Game
             {
                 // Continue to next battle
                 _player2.SetParty(_enemyBattleParties[currentBattleIndex]);
-                _battle = new Battle(player1: _player1, player2: _player2);
+                _battle = new Battle(_player1, _player2);
             }
         }
 
         // Hero party emerged victorious from all battles
         ColoredConsole.WriteLine("The heroes won! The Uncoded One's reign is finally over!", ConsoleColor.Green);
-    }
-
-    private void DisplayPlayerParty(Player player)
-    {
-        int playerPartySize = player.Party.Characters.Count;
-
-        for (int index = 0; index < playerPartySize; index++)
-        {
-            string characterName = player.Party.Characters[index].Name;
-
-            if (index >= playerPartySize - 1) Console.Write(characterName); // This is the last character in the party
-            else Console.Write(characterName + ", ");
-        }
     }
 }

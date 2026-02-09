@@ -8,8 +8,8 @@ public abstract class Item
 
     public Item(string name)
     {
-        Name = name.ToUpper();
+        Name = name;
     }
 
-    public override string ToString() => Name;
+    public override string ToString() => Name.ToUpper();
 }

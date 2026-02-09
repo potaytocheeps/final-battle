@@ -3,9 +3,8 @@
 /// </summary>
 public class TrueProgrammer : Character
 {
-    public TrueProgrammer(string name) : base(name, maxHP: 25)
+    public TrueProgrammer(string name) : base(name, maxHP: 25, new Sword())
     {
-        _attacks.Add(AttackType.Standard, new Punch());
-        EquipGear(new Sword());
+        _attacks.Insert(0, new Punch());
     }
 }

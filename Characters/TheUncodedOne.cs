@@ -5,6 +5,6 @@ public class TheUncodedOne : Character
 {
     public TheUncodedOne() : base("The Uncoded One", maxHP: 15)
     {
-        _attacks.Add(AttackType.Standard, new Unraveling());
+        _attacks.Insert(0, new Unraveling());
     }
 }

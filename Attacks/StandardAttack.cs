@@ -5,13 +5,13 @@ public class StandardAttack : Attack
 {
     public StandardAttack(string name) : base(name, AttackType.Standard) { }
 
-    public override int CalculateDamage(Attack attack)
+    public override int CalculateDamage()
     {
-        Damage = attack switch
+        Damage = this switch
         {
-            BoneCrunch => new Random().Next(2),
             Punch      => 1,
-            Unraveling => new Random().Next(3),
+            BoneCrunch => Random.Shared.Next(2),
+            Unraveling => Random.Shared.Next(3),
             _          => 0
         };
 

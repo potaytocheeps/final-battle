@@ -39,8 +39,34 @@ public class Battle
     {
         foreach (Character character in currentPlayer.Party.Characters)
         {
+            if (currentPlayer.PlayerNumber == 1)
+            {
+                ConsoleIOHandler.DisplayBattleStatus
+                (
+                    player1Party: currentPlayer.Party,
+                    player2Party: enemyPlayer.Party,
+                    character,
+                    _roundNumber
+                );
+            }
+            else
+            {
+                ConsoleIOHandler.DisplayBattleStatus
+                (
+                    player1Party: enemyPlayer.Party,
+                    player2Party: currentPlayer.Party,
+                    character,
+                    _roundNumber
+                );
+            }
+
+            ColoredConsole.WriteLine($"Player {currentPlayer.PlayerNumber}");
+            ColoredConsole.WriteLine($"It is {character}'s turn...");
+
             currentPlayer.TakeTurn(character, enemyPlayer, _roundNumber);
-            Console.WriteLine();
+
+            // Allow player to see the results of the turn and continue when they are ready
+            ConsoleIOHandler.WaitForPlayerConfirmation();
 
             // Check to see if either player's party has been completely defeated
             if (_player1.Party.Characters.Count == 0 || _player2.Party.Characters.Count == 0)
@@ -49,14 +75,5 @@ public class Battle
                 return;
             }
         }
-    }
-
-    public static void DisplayBattleStatus(Party player1Party, Party player2Party, Character currentCharacter, int currentRound)
-    {
-        ColoredConsole.WriteLine($"===================== ROUND {currentRound} =============================\n");
-        player1Party.DisplayPartyInfo(currentCharacter);
-        ColoredConsole.WriteLine("\n------------------------ vs -------------------------------\n");
-        player2Party.DisplayPartyInfo(currentCharacter, addPadding: true);
-        ColoredConsole.WriteLine("\n===========================================================");
     }
 }

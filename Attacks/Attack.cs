@@ -10,11 +10,10 @@ public abstract class Attack
 
     public Attack(string name, AttackType attackType)
     {
-        Name = name.ToUpper();
+        Name = name;
         AttackType = attackType;
     }
 
-    public override string ToString() => Name;
-
-    public abstract int CalculateDamage(Attack attack);
+    public abstract int CalculateDamage();
+    public override string ToString() => Name.ToUpper();
 }

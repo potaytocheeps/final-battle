@@ -10,65 +10,54 @@ public class ComputerPlayer : Player
 
     public override void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound)
     {
-        if (_playerNumber == 1) Battle.DisplayBattleStatus(player1Party: Party, player2Party: enemyPlayer.Party, currentCharacter, currentRound);
-        else Battle.DisplayBattleStatus(player1Party: enemyPlayer.Party, player2Party: Party, currentCharacter, currentRound);
-
-        ColoredConsole.WriteLine($"Player {_playerNumber}");
-        ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
-        Thread.Sleep(500);
         ActionType action = SelectAction(currentCharacter);
-        currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
+        TryPerformAction(action, currentCharacter, enemyPlayer);
     }
 
     protected override ActionType SelectAction(Character currentCharacter)
     {
-        if (Party.GetItemTypeCount<HealthPotion>() > 0)
+        bool hasHealthPotions = Party.ItemInventory.Any((item) => item is HealthPotion);
+
+        // Determine whether current character should heal
+        if (hasHealthPotions)
         {
             bool characterHealthIsUnderHalf = currentCharacter.CurrentHP < Math.Ceiling((float)currentCharacter.MaxHP / 2);
 
             if (characterHealthIsUnderHalf)
             {
                 // There's a 25% chance that this character will use a potion
-                if (new Random().Next(4) == 0) return ActionType.UseItem;
+                if (Random.Shared.Next(4) == 0) return ActionType.UseItem;
             }
         }
 
-        if (Party.Gear.Count > 0 && !currentCharacter.HasGearEquipped)
+        // Determine whether current character should equip gear
+        if (Party.GearInventory.Count > 0 && !currentCharacter.HasGearEquipped)
         {
-            if (new Random().Next(2) == 0) return ActionType.Equip;
+            // There's a 50% chance that this character will equip gear
+            if (Random.Shared.Next(2) == 0) return ActionType.Equip;
         }
 
+        // Player will default to attacking, if no other action was executed
         return ActionType.Attack;
     }
 
-    public override (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty)
+    protected override Attack SelectAttack(Character currentCharacter)
     {
-        Character attackTarget = SelectAttackTarget(enemyParty);
-        AttackType attackType = SelectAttack(currentCharacter);
-
-        return (attackType, attackTarget);
-    }
-
-    protected override AttackType SelectAttack(Character currentCharacter)
-    {
-        if (currentCharacter.Attacks.Count > 1) return AttackType.Special;
-        else return AttackType.Standard;
+        return currentCharacter.Attacks.FirstOrDefault
+        (
+            attack => attack.AttackType == AttackType.Special, // Return special attack, if character has one
+            defaultValue: currentCharacter.Attacks.First() // Otherwise, return the character's standard attack
+        );
     }
 
     protected override Character SelectAttackTarget(Party enemyParty)
     {
+        // Randomly select a character from the enemy player's party
         int enemyPartySize = enemyParty.Characters.Count;
-        int randomIndex = new Random().Next(enemyPartySize);
+        int randomIndex = Random.Shared.Next(enemyPartySize);
         return enemyParty.Characters[randomIndex];
     }
 
-    public override Item SelectItem()
-    {
-        return Party.Items.First();
-    }
-
-    public override Gear SelectGear()
-    {
-        return Party.Gear.First();
-    }
+    public override Item SelectItem() => Party.ItemInventory.First();
+    public override Gear SelectGear() => Party.GearInventory.First();
 }

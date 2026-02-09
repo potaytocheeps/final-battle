@@ -9,192 +9,96 @@ public class HumanPlayer : Player
 
     public override void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound)
     {
-        if (_playerNumber == 1) Battle.DisplayBattleStatus(player1Party: Party, player2Party: enemyPlayer.Party, currentCharacter, currentRound);
-        else Battle.DisplayBattleStatus(player1Party: enemyPlayer.Party, player2Party: Party, currentCharacter, currentRound);
-
-        ColoredConsole.WriteLine($"Player {_playerNumber}");
-        ColoredConsole.WriteLine($"It is {currentCharacter}'s turn...");
+        ActionType action;
 
         while (true)
         {
-            ActionType action = SelectAction(currentCharacter);
-            bool actionWasSuccessful = currentCharacter.PerformAction(currentPlayer: this, action, enemyPlayer);
-
-            if (actionWasSuccessful) break;
+            action = SelectAction(currentCharacter);
+            if (TryPerformAction(action, currentCharacter, enemyPlayer)) break;
         }
     }
 
     protected override ActionType SelectAction(Character _)
     {
-        ColoredConsole.WriteLine($"""
-            1 - Attack
-            2 - Use Item
-            3 - Equip Gear
-            4 - Do Nothing
-            """, ConsoleColor.Gray);
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions: ["Attack", "Use Item", "Equip Gear", "Do Nothing"]);
 
-        while (true)
-        {
-            string choice = ColoredConsole.PromptUser("What do you want to do? ", ConsoleColor.Gray).ToLower();
-            choice = choice.ToLower();
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: 4, prompt: "What do you want to do? ");
 
-            (ActionType actionType, bool success) = choice switch
-            {
-                "1" or "attack"                          => (ActionType.Attack, true),
-                "2" or "use item" or "use" or "item"     => (ActionType.UseItem, true),
-                "3" or "equip gear" or "equip" or "gear" => (ActionType.Equip, true),
-                "4" or "do nothing" or "nothing"         => (ActionType.Nothing, true),
-                _                                        => (ActionType.Nothing, false)
-            };
-
-            if (success) return actionType;
-            else ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
-        }
+        return Enum.Parse<ActionType>(selection.ToString());
     }
 
-    public override (AttackType, Character) PerformAttack(Character currentCharacter, Party enemyParty)
+    protected override Attack SelectAttack(Character currentCharacter)
     {
-        AttackType attackType = SelectAttack(currentCharacter);
-        Character attackTarget = SelectAttackTarget(enemyParty);
+        if (currentCharacter.Attacks.Count == 1) return currentCharacter.Attacks.First();
 
-        return (attackType, attackTarget);
-    }
+        string standardAttackName = currentCharacter.Attacks.First().Name;
+        string specialAttackName = currentCharacter.Attacks.Last().Name;
 
-    protected override AttackType SelectAttack(Character currentCharacter)
-    {
-        if (currentCharacter.Attacks.Count == 1) return currentCharacter.Attacks.First().Key;
+        List<string> selectionOptions =
+        [
+            $"Standard Attack ({standardAttackName})",
+            $"Special Attack ({specialAttackName})",
+        ];
 
-        string standardAttackName = currentCharacter.Attacks[AttackType.Standard].Name;
-        string specialAttackName = currentCharacter.Attacks[AttackType.Special].Name;
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: selectionOptions.Count, prompt: "Select your attack: ");
 
-        ColoredConsole.WriteLine($"""
-            1 - Standard Attack ({standardAttackName})
-            2 - Special Attack ({specialAttackName})
-            """, ConsoleColor.Gray);
-
-        while (true)
-        {
-            string choice = ColoredConsole.PromptUser("Select your attack: ", ConsoleColor.Gray).ToLower();
-
-            if (choice == "1" || choice == "standard" || choice == "standard attack" ||
-                choice == standardAttackName.ToLower())
-            {
-                return currentCharacter.Attacks.ElementAt(0).Key;
-            }
-            else if (choice == "2" || choice == "special" || choice == "special attack" ||
-                     choice == specialAttackName.ToLower())
-            {
-                return currentCharacter.Attacks.ElementAt(1).Key;
-            }
-
-            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
-            continue;
-        }
+        return currentCharacter.Attacks[selection];
     }
 
     protected override Character SelectAttackTarget(Party enemyParty)
     {
         if (enemyParty.Characters.Count == 1) return enemyParty.Characters.First();
 
-        int characterNumber = 1;
+        List<string> selectionOptions = [];
+
         foreach (Character character in enemyParty.Characters)
         {
-            ColoredConsole.WriteLine($"""
-                {characterNumber} - {character.Name}
-                """, ConsoleColor.Gray);
-
-            characterNumber++;
+            selectionOptions.Add(character.Name);
         }
 
-        while (true)
-        {
-            string choice = ColoredConsole.PromptUser("Select the target: ", ConsoleColor.Gray).ToLower();
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: enemyParty.Characters.Count, prompt: "Select the target: ");
 
-            for (int index = 0; index < enemyParty.Characters.Count; index++)
-            {
-                Character character = enemyParty.Characters[index];
-
-                if (choice == (index + 1).ToString() || choice == character.Name.ToLower()) return character;
-            }
-
-            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
-            continue;
-        }
+        return enemyParty.Characters[selection];
     }
 
     public override Item SelectItem()
     {
         List<Item> uniqueItems = Party.GetListOfUniqueItemsInInventory();
+        List<string> selectionOptions = [];
 
-        int itemNumber = 1;
         foreach (Item item in uniqueItems)
         {
-            // Capitalize only the first letter of the item's name
-            string itemName = item.Name[0] + item.Name.Substring(1).ToLower();
-
-            ColoredConsole.WriteLine($"""
-                {itemNumber} - {itemName} ({Party.GetItemTypeCount<Item>()})
-                """, ConsoleColor.Gray);
-
-            itemNumber++;
+            selectionOptions.Add($"{item.Name} ({Party.GetItemTypeCount(item)})");
         }
 
-        while (true)
-        {
-            string choice = ColoredConsole.PromptUser("Select item: ", ConsoleColor.Gray).ToLower();
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: uniqueItems.Count, prompt: "Select item: ");
 
-            for (int index = 0; index < uniqueItems.Count; index++)
-            {
-                Item item = uniqueItems[index];
-
-                if (choice == (index + 1).ToString() || choice == item.Name.ToLower()) return item;
-            }
-
-            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
-            continue;
-        }
+        return uniqueItems[selection];
     }
 
     public override Gear SelectGear()
     {
         List<Gear> uniqueGear = Party.GetListOfUniqueGearInInventory();
+        List<string> selectionOptions = [];
 
-        int itemNumber = 1;
         foreach (Gear gear in uniqueGear)
         {
-            // Capitalize only the first letter of the gear's name
-            string itemName = gear.Name[0] + gear.Name.Substring(1).ToLower();
-
-            ColoredConsole.WriteLine($"""
-                {itemNumber} - {itemName} ({Party.GetGearTypeCount(gear)})
-                """, ConsoleColor.Gray);
-
-            itemNumber++;
+            selectionOptions.Add($"{gear.Name} ({Party.GetGearTypeCount(gear)})");
         }
 
-        while (true)
-        {
-            string choice = ColoredConsole.PromptUser("Select gear: ", ConsoleColor.Gray).ToLower();
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: uniqueGear.Count, prompt: "Select gear: ");
 
-            for (int index = 0; index < uniqueGear.Count; index++)
-            {
-                Gear gear = uniqueGear[index];
-
-                if (choice == (index + 1).ToString() || choice == gear.Name.ToLower()) return gear;
-            }
-
-            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
-            continue;
-        }
+        return uniqueGear[selection];
     }
 }
 
 
-public record ActionData(ActionType ActionType, AttackType AttackType, Item Item, Gear Gear);
-
-
 // Enumeration with all of the possible actions that a character can take
-public enum ActionType { Nothing, Attack, UseItem, Equip }
+public enum ActionType { Attack, UseItem, Equip, Nothing }
 
 
 // Defines all of the different types of attacks that characters can perform

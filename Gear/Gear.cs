@@ -8,7 +8,9 @@ public class Gear
 
     public Gear(string name, SpecialAttack attackProvided)
     {
-        Name = name.ToUpper();
+        Name = name;
         AttackProvided = attackProvided;
     }
+
+    public override string ToString() => Name.ToUpper();
 }
