@@ -45,7 +45,7 @@ public class ConsoleIOHandler()
         }
     }
 
-    public static void DisplaySelectionMenu(List<string> selectionOptions)
+    public static void DisplaySelectionMenu(List<string> selectionOptions, bool isSubMenu = true)
     {
         for (int option = 0; option < selectionOptions.Count; option++)
         {
@@ -53,10 +53,21 @@ public class ConsoleIOHandler()
                 {option + 1} - {selectionOptions[option]}
                 """, ConsoleColor.Gray);
         }
+
+        if (isSubMenu)
+        {
+            ColoredConsole.WriteLine
+            (
+                $"{selectionOptions.Count + 1} - Return to previous menu",
+                ConsoleColor.Gray
+            );
+        }
     }
 
-    public static int AskUserForSelection(int numberOfOptions, string prompt)
+    public static int AskUserForSelection(int numberOfOptions, string prompt, bool isSubMenu = true)
     {
+        if (isSubMenu) numberOfOptions += 1;
+
         while (true)
         {
             string choice = ColoredConsole.PromptUser(prompt, ConsoleColor.Gray).ToLower();
@@ -68,7 +79,8 @@ public class ConsoleIOHandler()
                 if (selection >= 0 && selection < numberOfOptions) return selection;
             }
 
-            ColoredConsole.WriteLine("Invalid input. Please select one of the available options.", ConsoleColor.DarkRed);
+            ColoredConsole.WriteLine($"Invalid input. Please select one of the available options (1-{numberOfOptions}).",
+                                     ConsoleColor.DarkRed);
             continue;
         }
     }

@@ -41,23 +41,35 @@ public class ComputerPlayer : Player
         return ActionType.Attack;
     }
 
-    protected override Attack SelectAttack(Character currentCharacter)
+    protected override bool TrySelectAttack(Character currentCharacter, out Attack attack)
     {
-        return currentCharacter.Attacks.FirstOrDefault
+        attack = currentCharacter.Attacks.FirstOrDefault
         (
             attack => attack.AttackType == AttackType.Special, // Return special attack, if character has one
             defaultValue: currentCharacter.Attacks.First() // Otherwise, return the character's standard attack
         );
+
+        return true;
     }
 
-    protected override Character SelectAttackTarget(Party enemyParty)
+    protected override bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget)
     {
         // Randomly select a character from the enemy player's party
         int enemyPartySize = enemyParty.Characters.Count;
         int randomIndex = Random.Shared.Next(enemyPartySize);
-        return enemyParty.Characters[randomIndex];
+        attackTarget = enemyParty.Characters[randomIndex];
+        return true;
     }
 
-    public override Item SelectItem() => Party.ItemInventory.First();
-    public override Gear SelectGear() => Party.GearInventory.First();
+    public override bool TrySelectItem(out Item item)
+    {
+        item = Party.ItemInventory.First();
+        return true;
+    }
+
+    public override bool TrySelectGear(out Gear gear)
+    {
+        gear = Party.GearInventory.First();
+        return true;
+    }
 }

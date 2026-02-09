@@ -20,16 +20,20 @@ public class HumanPlayer : Player
 
     protected override ActionType SelectAction(Character _)
     {
-        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions: ["Attack", "Use Item", "Equip Gear", "Do Nothing"]);
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions: ["Attack", "Use Item", "Equip Gear", "Do Nothing"], isSubMenu: false);
 
-        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: 4, prompt: "What do you want to do? ");
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: 4, prompt: "What do you want to do? ", isSubMenu: false);
 
         return Enum.Parse<ActionType>(selection.ToString());
     }
 
-    protected override Attack SelectAttack(Character currentCharacter)
+    protected override bool TrySelectAttack(Character currentCharacter, out Attack attack)
     {
-        if (currentCharacter.Attacks.Count == 1) return currentCharacter.Attacks.First();
+        if (currentCharacter.Attacks.Count == 1)
+        {
+            attack = currentCharacter.Attacks.First();
+            return true;
+        }
 
         string standardAttackName = currentCharacter.Attacks.First().Name;
         string specialAttackName = currentCharacter.Attacks.Last().Name;
@@ -43,12 +47,23 @@ public class HumanPlayer : Player
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
         int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: selectionOptions.Count, prompt: "Select your attack: ");
 
-        return currentCharacter.Attacks[selection];
+        if (selection >= selectionOptions.Count)
+        {
+            attack = currentCharacter.Attacks[0];
+            return false;
+        }
+
+        attack = currentCharacter.Attacks[selection];
+        return true;
     }
 
-    protected override Character SelectAttackTarget(Party enemyParty)
+    protected override bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget)
     {
-        if (enemyParty.Characters.Count == 1) return enemyParty.Characters.First();
+        if (enemyParty.Characters.Count == 1)
+        {
+            attackTarget = enemyParty.Characters.First();
+            return true;
+        }
 
         List<string> selectionOptions = [];
 
@@ -60,10 +75,17 @@ public class HumanPlayer : Player
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
         int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: enemyParty.Characters.Count, prompt: "Select the target: ");
 
-        return enemyParty.Characters[selection];
+        if (selection >= enemyParty.Characters.Count)
+        {
+            attackTarget = enemyParty.Characters.First();
+            return false;
+        }
+
+        attackTarget = enemyParty.Characters[selection];
+        return true;
     }
 
-    public override Item SelectItem()
+    public override bool TrySelectItem(out Item selectedItem)
     {
         List<Item> uniqueItems = Party.GetListOfUniqueItemsInInventory();
         List<string> selectionOptions = [];
@@ -76,10 +98,17 @@ public class HumanPlayer : Player
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
         int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: uniqueItems.Count, prompt: "Select item: ");
 
-        return uniqueItems[selection];
+        if (selection >= uniqueItems.Count)
+        {
+            selectedItem = uniqueItems[0];
+            return false;
+        }
+
+        selectedItem = uniqueItems[selection];
+        return true;
     }
 
-    public override Gear SelectGear()
+    public override bool TrySelectGear(out Gear selectedGear)
     {
         List<Gear> uniqueGear = Party.GetListOfUniqueGearInInventory();
         List<string> selectionOptions = [];
@@ -92,7 +121,14 @@ public class HumanPlayer : Player
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
         int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: uniqueGear.Count, prompt: "Select gear: ");
 
-        return uniqueGear[selection];
+        if (selection >= uniqueGear.Count)
+        {
+            selectedGear = uniqueGear[0];
+            return false;
+        }
+
+        selectedGear = uniqueGear[selection];
+        return true;
     }
 }
 

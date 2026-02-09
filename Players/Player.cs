@@ -24,21 +24,33 @@ public abstract class Player
                 ColoredConsole.WriteLine($"{currentCharacter} did {action.ToString().ToUpper()}");
                 break;
             case ActionType.Attack:
-                PerformAttack(currentCharacter, enemyPlayer.Party);
-                break;
+                return TryPerformAttack(currentCharacter, enemyPlayer.Party);
             case ActionType.UseItem:
                 return TryPerformItemUse(currentCharacter);
             case ActionType.Equip:
                 return TryPerformGearEquip(currentCharacter);
+            default:
+                return false;
         }
 
         return true; // Action was successfully performed
     }
 
-    private void PerformAttack(Character currentCharacter, Party enemyParty)
+    private bool TryPerformAttack(Character currentCharacter, Party enemyParty)
     {
-        Attack attack = SelectAttack(currentCharacter);
-        Character attackTarget = SelectAttackTarget(enemyParty);
+        Attack attack;
+        Character attackTarget;
+
+        while (true)
+        {
+            bool attackWasSelected = TrySelectAttack(currentCharacter, out attack);
+
+            if (!attackWasSelected) return false;
+
+            bool attackTargetWasSelected = TrySelectAttackTarget(enemyParty, out attackTarget);
+
+            if (attackTargetWasSelected) break;
+        }
 
         currentCharacter.Attack(attack, attackTarget);
 
@@ -47,6 +59,8 @@ public abstract class Player
             ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
             enemyParty.RemoveFromParty(attackTarget);
         }
+
+        return true;
     }
 
     private bool TryPerformItemUse(Character currentCharacter)
@@ -57,7 +71,9 @@ public abstract class Player
             return false; // Action could not be completed. Ask player to select an action again
         }
 
-        Item? item = SelectItem();
+        bool itemWasSelected = TrySelectItem(out Item? item);
+
+        if (!itemWasSelected) return false;
 
         if (item != null)
         {
@@ -76,7 +92,10 @@ public abstract class Player
             return false; // Action could not be completed. Ask player to select an action again
         }
 
-        Gear? gear = SelectGear();
+        bool gearWasSelected = TrySelectGear(out Gear? gear);
+
+        if (!gearWasSelected) return false;
+
         Gear? previouslyEquippedGear = null;
 
         if (gear != null)
@@ -93,9 +112,8 @@ public abstract class Player
 
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound);
     protected abstract ActionType SelectAction(Character currentCharacter);
-    protected abstract Attack SelectAttack(Character currentCharacter);
-    protected abstract Character SelectAttackTarget(Party enemyParty);
-    public abstract Item? SelectItem();
-    public abstract Gear? SelectGear();
-
+    protected abstract bool TrySelectAttack(Character currentCharacter, out Attack attack);
+    protected abstract bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget);
+    public abstract bool TrySelectItem(out Item? item);
+    public abstract bool TrySelectGear(out Gear? gear);
 }
