@@ -9,7 +9,7 @@ public abstract class Character
     protected List<Attack> _attacks;
     public IReadOnlyList<Attack> Attacks => _attacks;
     public Gear? EquippedGear { get; private set; }
-    public bool HasGearEquipped { get; private set; }
+    public bool HasGearEquipped => EquippedGear != null;
 
     public Character(string name, int maxHP, Gear? startingGear = null)
     {
@@ -57,20 +57,19 @@ public abstract class Character
         else CurrentHP += healAmount;
     }
 
-    public Gear? EquipGear(Gear? gearToEquip)
+    public Gear? EquipGear(Gear gearToEquip)
     {
         Gear? previouslyEquippedGear = null;
 
         // Character already has gear equipped
-        if (EquippedGear != null) previouslyEquippedGear = EquippedGear;
+        if (EquippedGear != null)
+        {
+            previouslyEquippedGear = EquippedGear;
+            _attacks.Remove(EquippedGear.AttackProvided);
+        }
 
         EquippedGear = gearToEquip;
-        HasGearEquipped = true;
-
-        if (gearToEquip != null)
-        {
-            _attacks.Add(gearToEquip.AttackProvided);
-        }
+        _attacks.Add(gearToEquip.AttackProvided);
 
         return previouslyEquippedGear;
     }

@@ -24,6 +24,10 @@ public class Battle
             PlayRound();
             _roundNumber++;
         }
+
+        // After the battle, the winning player loots the losing player's party for any unused items and unequipped gear
+        if (_player1.Party.Characters.Count > 0) _player1.Loot(_player2.Party);
+        else _player2.Loot(_player1.Party);
     }
 
     public void PlayRound()

@@ -57,6 +57,17 @@ public abstract class Player
         if (attackTarget.CurrentHP == 0)
         {
             ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
+
+            // Loot the defeated character's equipped gear
+            if (attackTarget.EquippedGear != null)
+            {
+                Gear gear = attackTarget.EquippedGear;
+
+                Party.AddGearToInventory(gear);
+                ColoredConsole.WriteLine($"\n{attackTarget} dropped {gear}!");
+                ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
+            }
+
             enemyParty.RemoveFromParty(attackTarget);
         }
 
@@ -108,6 +119,63 @@ public abstract class Player
         if (previouslyEquippedGear != null) Party.AddGearToInventory(previouslyEquippedGear);
 
         return true;
+    }
+
+    public void Loot(Party losingParty)
+    {
+        bool partyWasLooted = false;
+
+        if (losingParty.ItemInventory.Count > 0)
+        {
+            LootItems(losingParty);
+            partyWasLooted = true;
+        }
+
+        if (losingParty.GearInventory.Count > 0)
+        {
+            LootGear(losingParty);
+            partyWasLooted = true;
+        }
+
+        if (partyWasLooted) ConsoleIOHandler.WaitForPlayerConfirmation();
+    }
+
+    private void LootItems(Party losingParty)
+    {
+        // Loot enemy party's items
+        foreach (Item item in losingParty.ItemInventory)
+        {
+            Party.AddItemToInventory(item);
+        }
+
+        List<Item> uniqueItems = losingParty.GetListOfUniqueItemsInInventory();
+
+        ColoredConsole.WriteLine($"Player {PlayerNumber} looted the following items from the enemy's party:");
+
+        // Display items looted
+        foreach (Item item in uniqueItems)
+        {
+            ColoredConsole.WriteLine($"- {item} ({losingParty.GetItemTypeCount(item)})");
+        }
+    }
+
+    private void LootGear(Party losingParty)
+    {
+        // Loot enemy party's gear
+        foreach (Gear gear in losingParty.GearInventory)
+        {
+            Party.AddGearToInventory(gear);
+        }
+
+        List<Gear> uniqueGear = losingParty.GetListOfUniqueGearInInventory();
+
+        ColoredConsole.WriteLine($"Player {PlayerNumber} looted the following gear from the enemy's party:");
+
+        // Display gear looted
+        foreach (Gear gear in uniqueGear)
+        {
+            ColoredConsole.WriteLine($"- {gear} ({losingParty.GetGearTypeCount(gear)})");
+        }
     }
 
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound);
