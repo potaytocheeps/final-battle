@@ -27,12 +27,19 @@ public abstract class Character
         // each time the attack is used during a turn
         attack.CalculateDamage();
 
-        attackTarget.TakeDamage(attack.Damage);
+        // Determine whether attack will land, based on its hit chance
+        bool attackLanded = Random.Shared.NextSingle() < attack.HitChance;
 
         // Display the results of having performed the attack
         ColoredConsole.WriteLine($"{this} used {attack} on {attackTarget}.");
-        ColoredConsole.WriteLine($"{attack} dealt {attack.Damage} damage to {attackTarget}.");
-        ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+
+        if (attackLanded)
+        {
+            attackTarget.TakeDamage(attack.Damage);
+            ColoredConsole.WriteLine($"{attack} dealt {attack.Damage} damage to {attackTarget}.");
+            ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+        }
+        else ColoredConsole.WriteLine($"{attack} missed!");
     }
 
     public void TakeDamage(int damageAmount)
