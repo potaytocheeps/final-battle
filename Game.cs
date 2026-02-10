@@ -10,7 +10,7 @@ public class Game
 
     public Game(string name, GameplayMode gameplayMode)
     {
-        List<Character> playerParty = [new TrueProgrammer(name)];
+        List<Character> playerParty = [new TrueProgrammer(name), new VinFletcher()];
         List<Item> heroPartyItems = [new HealthPotion(), new HealthPotion(), new HealthPotion()];
         List<Item> enemyPartyItems = [new HealthPotion()];
         Party defaultHeroParty = new Party

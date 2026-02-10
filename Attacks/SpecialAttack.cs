@@ -9,9 +9,10 @@ public class SpecialAttack : Attack
     {
         Damage = this switch
         {
-            Slash => 2,
-            Stab  => 1,
-            _     => 0
+            Slash     => 2,
+            Stab      => 1,
+            QuickShot => 3,
+            _         => 0
         };
 
         return Damage;
