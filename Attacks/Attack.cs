@@ -35,7 +35,7 @@ public abstract class Attack
 
                 foreach (Modifier modifier in defensiveModifiers)
                 {
-                    damageAmount = modifier.CalculateModifiedDamage(damageAmount);
+                    damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
                 }
             }
         }

@@ -8,11 +8,11 @@ public class Modifier(string name, int damageReductionAmount, ModifierType modif
     private readonly int _damageReductionAmount = damageReductionAmount;
     public ModifierType ModifierType { get; } = modifierType;
 
-    public int CalculateModifiedDamage(int damage)
+    public virtual int CalculateModifiedDamage(int damage, DamageType attackDamageType)
     {
         if (ModifierType == ModifierType.Defensive)
         {
-            ColoredConsole.WriteLine($"{this} reduced the attack by {_damageReductionAmount} point.");
+            ColoredConsole.WriteLine($"{this} reduced the attack by {_damageReductionAmount} damage.");
 
             int modifiedDamage = damage - _damageReductionAmount;
 
