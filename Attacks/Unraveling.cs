@@ -3,5 +3,5 @@
 /// </summary>
 public class Unraveling : StandardAttack
 {
-    public Unraveling() : base("Unraveling") { }
+    public Unraveling() : base("Unraveling", DamageType.Decoding) { }
 }

@@ -3,7 +3,7 @@
 /// </summary>
 public class SpecialAttack : Attack
 {
-    public SpecialAttack(string name) : base(name, AttackType.Special) { }
+    public SpecialAttack(string name, DamageType damageType = DamageType.Normal) : base(name, AttackType.Special, damageType) { }
 
     public override int CalculateDamage()
     {

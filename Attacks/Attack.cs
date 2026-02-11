@@ -8,14 +8,50 @@ public abstract class Attack
     public int Damage { get; protected set; }
     public AttackType AttackType { get; }
     public float HitChance { get; protected set; }
+    private readonly DamageType _damageType;
 
-    public Attack(string name, AttackType attackType)
+    public Attack(string name, AttackType attackType, DamageType damageType)
     {
         Name = name;
         AttackType = attackType;
         HitChance = 1; // By default, an attack has a 100% chance of hitting its target
+        _damageType = damageType;
+    }
+
+    public void DealDamage(Character attackTarget)
+    {
+        // The damage that an attack deals can vary per turn. It should be calculated
+        // each time the attack is used during a turn
+        int damageAmount = CalculateDamage();
+
+        // Modify damage amount if attack target has any damage modifiers
+        if (attackTarget.HasDamageModifier)
+        {
+            bool hasDefensiveModifier = attackTarget.Modifiers.ContainsKey(ModifierType.Defensive);
+
+            if (hasDefensiveModifier)
+            {
+                List<Modifier> defensiveModifiers = attackTarget.Modifiers[ModifierType.Defensive];
+
+                foreach (Modifier modifier in defensiveModifiers)
+                {
+                    damageAmount = modifier.CalculateModifiedDamage(damageAmount);
+                }
+            }
+        }
+
+        string damageType = _damageType.ToString().ToUpper();
+
+        // Display results of having performed the attack
+        attackTarget.TakeDamage(damageAmount);
+        ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
+        ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
     }
 
     public abstract int CalculateDamage();
     public override string ToString() => Name.ToUpper();
 }
+
+
+// Defines the different damage types that an attack can have
+public enum DamageType { Normal, Decoding }

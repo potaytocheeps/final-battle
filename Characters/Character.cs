@@ -11,7 +11,8 @@ public abstract class Character
     public Gear? EquippedGear { get; private set; }
     public bool HasGearEquipped => EquippedGear != null;
     protected Dictionary<ModifierType, List<Modifier>> _modifiers;
-    private bool HasDamageModifier => _modifiers.Count > 0;
+    public Dictionary<ModifierType, List<Modifier>> Modifiers => _modifiers;
+    public bool HasDamageModifier => _modifiers.Count > 0;
 
     public Character(string name, int maxHP, Gear? startingGear = null)
     {
@@ -26,38 +27,13 @@ public abstract class Character
 
     public void Attack(Attack attack, Character attackTarget)
     {
-        // The damage that an attack deals can vary per turn. It should be calculated
-        // each time the attack is used during a turn
-        int damageDealt = attack.CalculateDamage();
-
         // Determine whether attack will land, based on its hit chance
         bool attackLanded = Random.Shared.NextSingle() < attack.HitChance;
 
         // Display the results of having performed the attack
         ColoredConsole.WriteLine($"{this} used {attack} on {attackTarget}.");
 
-        if (attackLanded)
-        {
-            // Modify damage dealt if attack target has any damage modifiers
-            if (attackTarget.HasDamageModifier)
-            {
-                bool hasDefensiveModifier = attackTarget._modifiers.ContainsKey(ModifierType.Defensive);
-
-                if (hasDefensiveModifier)
-                {
-                    List<Modifier> defensiveModifiers = attackTarget._modifiers[ModifierType.Defensive];
-
-                    foreach (Modifier modifier in defensiveModifiers)
-                    {
-                        damageDealt = modifier.CalculateModifiedDamage(damageDealt);
-                    }
-                }
-            }
-
-            attackTarget.TakeDamage(damageDealt);
-            ColoredConsole.WriteLine($"{attack} dealt {damageDealt} damage to {attackTarget}.");
-            ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
-        }
+        if (attackLanded) attack.DealDamage(attackTarget);
         else ColoredConsole.WriteLine($"{attack} missed!");
     }
 

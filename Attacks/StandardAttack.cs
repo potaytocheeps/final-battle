@@ -3,7 +3,7 @@
 /// </summary>
 public class StandardAttack : Attack
 {
-    public StandardAttack(string name) : base(name, AttackType.Standard) { }
+    public StandardAttack(string name, DamageType damageType = DamageType.Normal) : base(name, AttackType.Standard, damageType) { }
 
     public override int CalculateDamage()
     {
@@ -11,7 +11,7 @@ public class StandardAttack : Attack
         {
             Punch or Bite => 1,
             BoneCrunch    => Random.Shared.Next(2),
-            Unraveling    => Random.Shared.Next(3),
+            Unraveling    => Random.Shared.Next(5),
             _             => 0
         };
 
