@@ -36,6 +36,12 @@ public class Game
                 ),
                 new Party // Battle 3
                 (
+                    characters: [new StoneAmarok(1), new StoneAmarok(2)],
+                    startingItems: enemyPartyItems,
+                    startingGear: []
+                ),
+                new Party // Final Battle
+                (
                     characters: [new TheUncodedOne()],
                     startingItems: enemyPartyItems,
                     startingGear: new ()
