@@ -1,16 +1,16 @@
 /// <summary>
-/// Restores HP to the character that uses it.
+/// A consumable item that restores HP to a character when used.
 /// </summary>
-public class HealthPotion : Item
+public abstract class HealthPotion : Item
 {
     private readonly int _healAmount;
 
-    public HealthPotion() : base("Health Potion")
+    public HealthPotion(string name, int healAmount = 0) : base(name)
     {
-        _healAmount = 10;
+        _healAmount = healAmount;
     }
 
-    public void Heal(Character user, Character healTarget)
+    public virtual void Heal(Character user, Character healTarget)
     {
         healTarget.Heal(_healAmount);
         ColoredConsole.WriteLine($"{user} used {this}.");

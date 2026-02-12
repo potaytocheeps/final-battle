@@ -11,8 +11,8 @@ public class Game
     public Game(string name, GameplayMode gameplayMode)
     {
         List<Character> playerParty = [new TrueProgrammer(name), new VinFletcher(), new MylaraAndSkorin()];
-        List<Item> heroPartyItems = [new HealthPotion(), new HealthPotion(), new HealthPotion()];
-        List<Item> enemyPartyItems = [new HealthPotion()];
+        List<Item> heroPartyItems = [new SmallHealthPotion(), new SmallHealthPotion(), new SimulasSoup()];
+        List<Item> enemyPartyItems = [new SmallHealthPotion()];
         Party defaultHeroParty = new Party
         (
             characters: playerParty,
@@ -43,7 +43,7 @@ public class Game
                 new Party // Final Battle
                 (
                     characters: [new TheUncodedOne()],
-                    startingItems: [new HealthPotion(), new HealthPotion(), new HealthPotion()],
+                    startingItems: [new SimulasSoup()],
                     startingGear: new ()
                 )
             ];
