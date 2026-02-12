@@ -56,7 +56,8 @@ public abstract class Player
 
         if (attackTarget.CurrentHP == 0)
         {
-            ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
+            if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been defeated!", ConsoleColor.Red);
+            else ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
 
             // Loot the defeated character's equipped gear
             if (attackTarget.EquippedGear != null)

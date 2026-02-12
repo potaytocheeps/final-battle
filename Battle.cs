@@ -7,14 +7,14 @@ public class Battle
     private readonly Player _player1;
     private readonly Player _player2;
     private bool _battleIsOver;
-    private int _roundNumber;
+    public static int RoundNumber { get; private set; }
 
     public Battle(Player player1, Player player2)
     {
         _player1 = player1;
         _player2 = player2;
         _battleIsOver = false;
-        _roundNumber = 1;
+        RoundNumber = 1;
     }
 
     public void Play()
@@ -22,7 +22,7 @@ public class Battle
         while (!_battleIsOver)
         {
             PlayRound();
-            _roundNumber++;
+            RoundNumber++;
         }
 
         // After the battle, the winning player loots the losing player's party for any unused items and unequipped gear
@@ -50,7 +50,7 @@ public class Battle
                     player1Party: currentPlayer.Party,
                     player2Party: enemyPlayer.Party,
                     character,
-                    _roundNumber
+                    RoundNumber
                 );
             }
             else
@@ -60,14 +60,14 @@ public class Battle
                     player1Party: enemyPlayer.Party,
                     player2Party: currentPlayer.Party,
                     character,
-                    _roundNumber
+                    RoundNumber
                 );
             }
 
             ColoredConsole.WriteLine($"Player {currentPlayer.PlayerNumber}");
             ColoredConsole.WriteLine($"It is {character}'s turn...");
 
-            currentPlayer.TakeTurn(character, enemyPlayer, _roundNumber);
+            currentPlayer.TakeTurn(character, enemyPlayer, RoundNumber);
 
             // Allow player to see the results of the turn and continue when they are ready
             ConsoleIOHandler.WaitForPlayerConfirmation();

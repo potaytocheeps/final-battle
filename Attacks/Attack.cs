@@ -45,7 +45,9 @@ public abstract class Attack
         // Display results of having performed the attack
         attackTarget.TakeDamage(damageAmount);
         ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
-        ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+
+        if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} are now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+        else ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
     }
 
     public abstract int CalculateDamage();
