@@ -5,7 +5,7 @@
 /// </summary>
 public class ObjectSight: Modifier
 {
-    public ObjectSight() : base("Object Sight", damageReductionAmount: 2, ModifierType.Defensive) { }
+    public ObjectSight() : base("Object Sight", damageAmount: 2, ModifierType.Defensive) { }
 
     public override int CalculateModifiedDamage(int damage, DamageType attackDamageType)
     {

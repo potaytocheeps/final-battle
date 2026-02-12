@@ -4,5 +4,5 @@
 /// </summary>
 public class StoneArmor: Modifier
 {
-    public StoneArmor() : base("Stone Armor", damageReductionAmount: 1, ModifierType.Defensive) { }
+    public StoneArmor() : base("Stone Armor", damageAmount: 1, ModifierType.Defensive) { }
 }

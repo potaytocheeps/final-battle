@@ -7,5 +7,6 @@ public class TrueProgrammer : Character
     {
         _attacks.Insert(0, new Punch());
         _modifiers.Add(ModifierType.Defensive, [new ObjectSight()]);
+        _modifiers.Add(ModifierType.Offensive, [new DamageBuff()]);
     }
 }

@@ -18,25 +18,30 @@ public abstract class Attack
         _damageType = damageType;
     }
 
-    public void DealDamage(Character attackTarget)
+    public void DealDamage(Character user, Character attackTarget)
     {
         // The damage that an attack deals can vary per turn. It should be calculated
         // each time the attack is used during a turn
         int damageAmount = CalculateDamage();
 
         // Modify damage amount if attack target has any damage modifiers
-        if (attackTarget.HasDamageModifier)
+        if (attackTarget.HasDefensiveDamageModifier)
         {
-            bool hasDefensiveModifier = attackTarget.Modifiers.ContainsKey(ModifierType.Defensive);
+            List<Modifier> defensiveModifiers = attackTarget.Modifiers[ModifierType.Defensive];
 
-            if (hasDefensiveModifier)
+            foreach (Modifier modifier in defensiveModifiers)
             {
-                List<Modifier> defensiveModifiers = attackTarget.Modifiers[ModifierType.Defensive];
+                damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
+            }
+        }
 
-                foreach (Modifier modifier in defensiveModifiers)
-                {
-                    damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
-                }
+        if (user.HasOffensiveDamageModifier)
+        {
+            List<Modifier> offensiveModifiers = user.Modifiers[ModifierType.Offensive];
+
+            foreach (Modifier modifier in offensiveModifiers)
+            {
+                damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
             }
         }
 

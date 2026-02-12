@@ -12,7 +12,8 @@ public abstract class Character
     public bool HasGearEquipped => EquippedGear != null;
     protected Dictionary<ModifierType, List<Modifier>> _modifiers;
     public Dictionary<ModifierType, List<Modifier>> Modifiers => _modifiers;
-    public bool HasDamageModifier => _modifiers.Count > 0;
+    public bool HasDefensiveDamageModifier => _modifiers.ContainsKey(ModifierType.Defensive);
+    public bool HasOffensiveDamageModifier => _modifiers.ContainsKey(ModifierType.Offensive);
 
     public Character(string name, int maxHP, Gear? startingGear = null)
     {
@@ -33,7 +34,7 @@ public abstract class Character
         // Display the results of having performed the attack
         ColoredConsole.WriteLine($"{this} used {attack} on {attackTarget}.");
 
-        if (attackLanded) attack.DealDamage(attackTarget);
+        if (attackLanded) attack.DealDamage(user: this, attackTarget);
         else ColoredConsole.WriteLine($"{attack} missed!");
     }
 
