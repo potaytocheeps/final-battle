@@ -62,11 +62,13 @@ public abstract class Player
             // Loot the defeated character's equipped gear
             if (attackTarget.EquippedGear != null)
             {
-                Gear gear = attackTarget.EquippedGear;
+                foreach (Gear gear in attackTarget.EquippedGear)
+                {
+                    Party.AddGearToInventory(gear);
+                    ColoredConsole.WriteLine($"\n{attackTarget} dropped {gear}!");
+                    ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
+                }
 
-                Party.AddGearToInventory(gear);
-                ColoredConsole.WriteLine($"\n{attackTarget} dropped {gear}!");
-                ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
             }
 
             enemyParty.RemoveFromParty(attackTarget);
@@ -104,20 +106,13 @@ public abstract class Player
             return false; // Action could not be completed. Ask player to select an action again
         }
 
-        bool gearWasSelected = TrySelectGear(out Gear? gear);
+        bool gearWasSelected = TrySelectGear(out Gear gear);
 
         if (!gearWasSelected) return false;
 
-        Gear? previouslyEquippedGear = null;
-
-        if (gear != null)
-        {
-            previouslyEquippedGear = currentCharacter.EquipGear(gear);
-            ColoredConsole.WriteLine($"{currentCharacter} equipped {gear} and gained Special Attack: {gear.AttackProvided}");
-            Party.RemoveGearFromInventory(gear);
-        }
-
-        if (previouslyEquippedGear != null) Party.AddGearToInventory(previouslyEquippedGear);
+        currentCharacter.EquipGear(gear);
+        ColoredConsole.WriteLine($"{currentCharacter} equipped {gear} and gained Special Attack: {gear.AttackProvided}");
+        Party.RemoveGearFromInventory(gear);
 
         return true;
     }
@@ -184,5 +179,5 @@ public abstract class Player
     protected abstract bool TrySelectAttack(Character currentCharacter, out Attack attack);
     protected abstract bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget);
     public abstract bool TrySelectItem(out Item? item);
-    public abstract bool TrySelectGear(out Gear? gear);
+    public abstract bool TrySelectGear(out Gear gear);
 }

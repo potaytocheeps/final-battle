@@ -27,33 +27,31 @@ public class HumanPlayer : Player
         return Enum.Parse<ActionType>(selection.ToString());
     }
 
-    protected override bool TrySelectAttack(Character currentCharacter, out Attack attack)
+    protected override bool TrySelectAttack(Character currentCharacter, out Attack selectedAttack)
     {
         if (currentCharacter.Attacks.Count == 1)
         {
-            attack = currentCharacter.Attacks.First();
+            selectedAttack = currentCharacter.Attacks.First();
             return true;
         }
 
-        string standardAttackName = currentCharacter.Attacks.First().Name;
-        string specialAttackName = currentCharacter.Attacks.Last().Name;
+        List<string> selectionOptions = [];
 
-        List<string> selectionOptions =
-        [
-            $"Standard Attack ({standardAttackName})",
-            $"Special Attack ({specialAttackName})",
-        ];
+        foreach (Attack attack in currentCharacter.Attacks)
+        {
+            selectionOptions.Add($"{attack}");
+        }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
         int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: selectionOptions.Count, prompt: "Select your attack: ");
 
         if (selection >= selectionOptions.Count)
         {
-            attack = currentCharacter.Attacks[0];
+            selectedAttack = currentCharacter.Attacks[0];
             return false;
         }
 
-        attack = currentCharacter.Attacks[selection];
+        selectedAttack = currentCharacter.Attacks[selection];
         return true;
     }
 

@@ -39,9 +39,16 @@ public class ConsoleIOHandler()
             if (character == currentCharacter) ColoredConsole.Write($"{character}", ConsoleColor.Yellow);
             else ColoredConsole.Write($"{character}");
 
-            if (character.HasGearEquipped) ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP}) " +
-                                                                    $"({character.EquippedGear?.Name})");
-            else ColoredConsole.WriteLine($" (HP: {character.CurrentHP}/{character.MaxHP})");
+            ColoredConsole.Write($" (HP: {character.CurrentHP}/{character.MaxHP})");
+
+            if (character.HasGearEquipped)
+            {
+                string gearEquipped = string.Join(", ", character.EquippedGear);
+
+                ColoredConsole.Write($" ({gearEquipped})");
+            }
+
+            ColoredConsole.WriteLine("");
         }
     }
 

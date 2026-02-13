@@ -8,8 +8,9 @@ public abstract class Character
     public int CurrentHP { get; private set; }
     protected List<Attack> _attacks;
     public IReadOnlyList<Attack> Attacks => _attacks;
-    public Gear? EquippedGear { get; private set; }
-    public bool HasGearEquipped => EquippedGear != null;
+    private List<Gear> _equippedGear;
+    public IReadOnlyList<Gear> EquippedGear => _equippedGear;
+    public bool HasGearEquipped => EquippedGear.Count > 0;
     protected Dictionary<ModifierType, List<Modifier>> _modifiers;
     public Dictionary<ModifierType, List<Modifier>> Modifiers => _modifiers;
     public bool HasDefensiveDamageModifier => _modifiers.ContainsKey(ModifierType.Defensive);
@@ -22,6 +23,7 @@ public abstract class Character
         CurrentHP = maxHP;
         _attacks = [];
         _modifiers = [];
+        _equippedGear = [];
 
         if (startingGear != null) EquipGear(startingGear);
     }
@@ -60,21 +62,10 @@ public abstract class Character
         else CurrentHP += healAmount;
     }
 
-    public Gear? EquipGear(Gear gearToEquip)
+    public void EquipGear(Gear gearToEquip)
     {
-        Gear? previouslyEquippedGear = null;
-
-        // Character already has gear equipped
-        if (EquippedGear != null)
-        {
-            previouslyEquippedGear = EquippedGear;
-            _attacks.Remove(EquippedGear.AttackProvided);
-        }
-
-        EquippedGear = gearToEquip;
+        _equippedGear.Add(gearToEquip);
         _attacks.Add(gearToEquip.AttackProvided);
-
-        return previouslyEquippedGear;
     }
 
     public override string ToString() => Name.ToUpper();
