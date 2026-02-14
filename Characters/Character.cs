@@ -25,7 +25,7 @@ public abstract class Character
         _modifiers = [];
         _equippedGear = [];
 
-        if (startingGear != null) EquipGear(startingGear);
+        if (startingGear != null) EquipGear(startingGear, isStartingGear: true);
     }
 
     public void Attack(Attack attack, Character attackTarget)
@@ -62,10 +62,35 @@ public abstract class Character
         else CurrentHP += healAmount;
     }
 
-    public void EquipGear(Gear gearToEquip)
+    public void EquipGear(Gear gearToEquip, bool isStartingGear = false)
     {
         _equippedGear.Add(gearToEquip);
         _attacks.Add(gearToEquip.AttackProvided);
+
+        if (!isStartingGear)
+        {
+            ColoredConsole.WriteLine($"{this} equipped {gearToEquip} and gained:");
+            ColoredConsole.WriteLine($"- Special attack: {gearToEquip.AttackProvided}");
+        }
+
+        if (gearToEquip.ProvidesModifiers)
+        {
+            foreach (Modifier modifier in gearToEquip.ModifiersProvided)
+            {
+                // If this character didn't already have this type of modifier, create a new dictionary
+                // entry and new list with this modifier as its only element
+                if (!_modifiers.ContainsKey(modifier.ModifierType))
+                {
+                    _modifiers.Add(modifier.ModifierType, [modifier]);
+                }
+                else // Add the modifier to the list that already exists
+                {
+                    _modifiers[modifier.ModifierType].Add(modifier);
+                }
+
+                if (!isStartingGear) ColoredConsole.WriteLine($"- {modifier.ModifierType} attack modifier: {modifier}");
+            }
+        }
     }
 
     public override string ToString() => Name.ToUpper();

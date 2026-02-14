@@ -111,7 +111,6 @@ public abstract class Player
         if (!gearWasSelected) return false;
 
         currentCharacter.EquipGear(gear);
-        ColoredConsole.WriteLine($"{currentCharacter} equipped {gear} and gained Special Attack: {gear.AttackProvided}");
         Party.RemoveGearFromInventory(gear);
 
         return true;
