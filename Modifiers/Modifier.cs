@@ -8,28 +8,26 @@ public abstract class Modifier(string name, int damageAmount, ModifierType modif
     private readonly int _damageAmount = damageAmount;
     public ModifierType ModifierType { get; private set; } = modifierType;
 
-    public virtual int CalculateModifiedDamage(int damage, DamageType attackDamageType)
+    public virtual int CalculateModifiedDamage(Character character, int damage, DamageType attackDamageType)
     {
-        int modifiedDamage;
+        int modifiedDamage = damage;
 
         if (ModifierType == ModifierType.Defensive)
         {
-            ColoredConsole.WriteLine($"{this} reduced the attack by {_damageAmount} damage.");
+            modifiedDamage = Math.Max(0, damage - _damageAmount);
 
-            modifiedDamage = damage - _damageAmount;
-
-            return Math.Max(0, modifiedDamage);
+            ColoredConsole.WriteLine($"{character}'s {this} reduced the attack by " +
+                                     $"{_damageAmount} damage: ({damage}->{modifiedDamage})");
         }
         else if (ModifierType == ModifierType.Offensive)
         {
-            ColoredConsole.WriteLine($"{this} increased the attack by {_damageAmount} damage.");
-
             modifiedDamage = damage + _damageAmount;
 
-            return modifiedDamage;
+            ColoredConsole.WriteLine($"{character}'s {this} increased the attack by " +
+                                     $"{_damageAmount} damage: ({damage}->{modifiedDamage})");
         }
 
-        return damage;
+        return modifiedDamage;
     }
 
     public override string ToString() => _name.ToUpper();

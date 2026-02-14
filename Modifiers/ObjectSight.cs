@@ -7,11 +7,11 @@ public class ObjectSight: Modifier
 {
     public ObjectSight() : base("Object Sight", damageAmount: 2, ModifierType.Defensive) { }
 
-    public override int CalculateModifiedDamage(int damage, DamageType attackDamageType)
+    public override int CalculateModifiedDamage(Character character, int damage, DamageType attackDamageType)
     {
         if (attackDamageType == DamageType.Decoding)
         {
-            return base.CalculateModifiedDamage(damage, attackDamageType);
+            return base.CalculateModifiedDamage(character, damage, attackDamageType);
         }
 
         return damage;

@@ -25,23 +25,23 @@ public abstract class Attack
         int damageAmount = CalculateDamage();
 
         // Modify damage amount if attack target has any damage modifiers
-        if (attackTarget.HasDefensiveDamageModifier)
-        {
-            List<Modifier> defensiveModifiers = attackTarget.Modifiers[ModifierType.Defensive];
-
-            foreach (Modifier modifier in defensiveModifiers)
-            {
-                damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
-            }
-        }
-
         if (user.HasOffensiveDamageModifier)
         {
             List<Modifier> offensiveModifiers = user.Modifiers[ModifierType.Offensive];
 
             foreach (Modifier modifier in offensiveModifiers)
             {
-                damageAmount = modifier.CalculateModifiedDamage(damageAmount, _damageType);
+                damageAmount = modifier.CalculateModifiedDamage(user, damageAmount, _damageType);
+            }
+        }
+
+        if (attackTarget.HasDefensiveDamageModifier)
+        {
+            List<Modifier> defensiveModifiers = attackTarget.Modifiers[ModifierType.Defensive];
+
+            foreach (Modifier modifier in defensiveModifiers)
+            {
+                damageAmount = modifier.CalculateModifiedDamage(attackTarget, damageAmount, _damageType);
             }
         }
 
