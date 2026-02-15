@@ -65,12 +65,13 @@ public abstract class Character
     public void EquipGear(Gear gearToEquip, bool isStartingGear = false)
     {
         _equippedGear.Add(gearToEquip);
-        _attacks.Add(gearToEquip.AttackProvided);
+
+        if (gearToEquip.AttackProvided != null) _attacks.Add(gearToEquip.AttackProvided);
 
         if (!isStartingGear)
         {
             ColoredConsole.WriteLine($"{this} equipped {gearToEquip} and gained:");
-            ColoredConsole.WriteLine($"- Special attack: {gearToEquip.AttackProvided}");
+            if (gearToEquip.AttackProvided != null) ColoredConsole.WriteLine($"- Special attack: {gearToEquip.AttackProvided}");
         }
 
         if (gearToEquip.ProvidesModifiers)
