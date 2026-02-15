@@ -24,7 +24,7 @@ public class Game
             [
                 new Party // Battle 1
                 (
-                    characters: [new Skeleton(new Dagger())],
+                    characters: [new Skeleton(new Dagger()), new ShadowOctopoid()],
                     startingItems: enemyPartyItems,
                     startingGear: []
                 ),

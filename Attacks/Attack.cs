@@ -18,7 +18,7 @@ public abstract class Attack
         _damageType = damageType;
     }
 
-    public void DealDamage(Character user, Character attackTarget)
+    public virtual void DealDamage(Character user, Character attackTarget)
     {
         // The damage that an attack deals can vary per turn. It should be calculated
         // each time the attack is used during a turn

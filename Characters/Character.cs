@@ -94,11 +94,12 @@ public abstract class Character
         }
     }
 
-    public void UnequipGear(Gear gearToRemove)
+    public void UnequipGear(Gear gearToRemove, bool gearWasStolen = false)
     {
         _equippedGear.Remove(gearToRemove);
 
-        ColoredConsole.WriteLine($"{this} unequipped {gearToRemove} and lost:");
+        if (gearWasStolen) ColoredConsole.WriteLine($"{this} lost {gearToRemove} and also lost:");
+        else ColoredConsole.WriteLine($"{this} unequipped {gearToRemove} and lost:");
 
         if (gearToRemove.AttackProvided != null)
         {
