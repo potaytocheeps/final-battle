@@ -94,5 +94,34 @@ public abstract class Character
         }
     }
 
+    public void UnequipGear(Gear gearToRemove)
+    {
+        _equippedGear.Remove(gearToRemove);
+
+        ColoredConsole.WriteLine($"{this} unequipped {gearToRemove} and lost:");
+
+        if (gearToRemove.AttackProvided != null)
+        {
+            _attacks.Remove(gearToRemove.AttackProvided);
+            ColoredConsole.WriteLine($"- Special attack: {gearToRemove.AttackProvided}");
+        }
+
+        if (gearToRemove.ProvidesModifiers)
+        {
+            foreach (Modifier modifier in gearToRemove.ModifiersProvided)
+            {
+                if (_modifiers.ContainsKey(modifier.ModifierType))
+                {
+                    // If this character only had one modifier of this type, remove the whole
+                    // entry from the dictionary, otherwise only remove the modifier from the list
+                    if (_modifiers[modifier.ModifierType].Count <= 1) _modifiers.Remove(modifier.ModifierType);
+                    else _modifiers[modifier.ModifierType].Remove(modifier);
+
+                    ColoredConsole.WriteLine($"- {modifier.ModifierType} attack modifier: {modifier}");
+                }
+            }
+        }
+    }
+
     public override string ToString() => Name.ToUpper();
 }

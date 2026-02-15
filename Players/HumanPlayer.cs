@@ -20,9 +20,13 @@ public class HumanPlayer : Player
 
     protected override ActionType SelectAction(Character _)
     {
-        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions: ["Attack", "Use Item", "Equip Gear", "Do Nothing"], isSubMenu: false);
+        List<string> selectionOptions = ["Attack", "Use Item", "Equip Gear", "Unequip Gear", "Do Nothing"];
 
-        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: 4, prompt: "What do you want to do? ", isSubMenu: false);
+        ConsoleIOHandler.DisplaySelectionMenu(selectionOptions, isSubMenu: false);
+
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: selectionOptions.Count,
+                                                             prompt: "What do you want to do? ",
+                                                             isSubMenu: false);
 
         return Enum.Parse<ActionType>(selection.ToString());
     }
@@ -106,33 +110,33 @@ public class HumanPlayer : Player
         return true;
     }
 
-    public override bool TrySelectGear(out Gear selectedGear)
+    public override bool TrySelectGear(IReadOnlyList<Gear> gearOptions, out Gear selectedGear, bool isEquipMenu = true)
     {
-        List<Gear> uniqueGear = Party.GetListOfUniqueGearInInventory();
         List<string> selectionOptions = [];
 
-        foreach (Gear gear in uniqueGear)
+        foreach (Gear gear in gearOptions)
         {
-            selectionOptions.Add($"{gear.Name} ({Party.GetGearTypeCount(gear)})");
+            if (isEquipMenu) selectionOptions.Add($"{gear.Name} ({Party.GetGearTypeCount(gear)})");
+            else selectionOptions.Add($"{gear.Name}");
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
-        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: uniqueGear.Count, prompt: "Select gear: ");
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: gearOptions.Count, prompt: "Select gear: ");
 
-        if (selection >= uniqueGear.Count)
+        if (selection >= gearOptions.Count)
         {
-            selectedGear = uniqueGear[0];
+            selectedGear = gearOptions[0];
             return false;
         }
 
-        selectedGear = uniqueGear[selection];
+        selectedGear = gearOptions[selection];
         return true;
     }
 }
 
 
 // Enumeration with all of the possible actions that a character can take
-public enum ActionType { Attack, UseItem, Equip, Nothing }
+public enum ActionType { Attack, UseItem, Equip, Unequip, Nothing }
 
 
 // Defines all of the different types of attacks that characters can perform

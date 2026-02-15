@@ -67,7 +67,7 @@ public class ComputerPlayer : Player
         return true;
     }
 
-    public override bool TrySelectGear(out Gear gear)
+    public override bool TrySelectGear(IReadOnlyList<Gear> _, out Gear gear, bool __)
     {
         gear = Party.GearInventory.First();
         return true;

@@ -29,6 +29,8 @@ public abstract class Player
                 return TryPerformItemUse(currentCharacter);
             case ActionType.Equip:
                 return TryPerformGearEquip(currentCharacter);
+            case ActionType.Unequip:
+                return TryPerformGearUnequip(currentCharacter);
             default:
                 return false;
         }
@@ -106,12 +108,31 @@ public abstract class Player
             return false; // Action could not be completed. Ask player to select an action again
         }
 
-        bool gearWasSelected = TrySelectGear(out Gear gear);
+        bool gearWasSelected = TrySelectGear(Party.GetListOfUniqueGearInInventory(), out Gear gear);
 
         if (!gearWasSelected) return false;
 
         currentCharacter.EquipGear(gear);
         Party.RemoveGearFromInventory(gear);
+
+        return true;
+    }
+
+    private bool TryPerformGearUnequip(Character currentCharacter)
+    {
+        if (!currentCharacter.HasGearEquipped)
+        {
+            ColoredConsole.WriteLine("No gear equipped.", ConsoleColor.DarkRed);
+            return false; // Action could not be completed. Ask player to select an action again
+        }
+
+        bool gearWasSelected = TrySelectGear(currentCharacter.EquippedGear, out Gear gear, isEquipMenu: false);
+
+        if (!gearWasSelected) return false;
+
+        currentCharacter.UnequipGear(gear);
+        Party.AddGearToInventory(gear);
+        ColoredConsole.WriteLine($"{gear} was added back to inventory.");
 
         return true;
     }
@@ -178,5 +199,5 @@ public abstract class Player
     protected abstract bool TrySelectAttack(Character currentCharacter, out Attack attack);
     protected abstract bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget);
     public abstract bool TrySelectItem(out Item? item);
-    public abstract bool TrySelectGear(out Gear gear);
+    public abstract bool TrySelectGear(IReadOnlyList<Gear> gearOptions, out Gear gear, bool isEquipMenu = true);
 }
