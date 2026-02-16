@@ -56,25 +56,7 @@ public abstract class Player
 
         currentCharacter.Attack(attack, attackTarget);
 
-        if (attackTarget.CurrentHP == 0)
-        {
-            if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been defeated!", ConsoleColor.Red);
-            else ColoredConsole.WriteLine($"{attackTarget} has been defeated!", ConsoleColor.Red);
-
-            // Loot the defeated character's equipped gear
-            if (attackTarget.EquippedGear != null)
-            {
-                foreach (Gear gear in attackTarget.EquippedGear)
-                {
-                    Party.AddGearToInventory(gear);
-                    ColoredConsole.WriteLine($"\n{attackTarget} dropped {gear}!");
-                    ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
-                }
-
-            }
-
-            enemyParty.RemoveFromParty(attackTarget);
-        }
+        if (attackTarget.CurrentHP == 0) LootEnemyCharacter(attackTarget, deafeatedCharacterParty: enemyParty);
 
         return true;
     }
@@ -135,6 +117,22 @@ public abstract class Player
         ColoredConsole.WriteLine($"{gear} was added back to inventory.");
 
         return true;
+    }
+
+    public void LootEnemyCharacter(Character character, Party deafeatedCharacterParty)
+    {
+        // Loot the defeated character's equipped gear
+        if (character.EquippedGear != null)
+        {
+            foreach (Gear gear in character.EquippedGear)
+            {
+                Party.AddGearToInventory(gear);
+                ColoredConsole.WriteLine($"\n{character} dropped {gear}!");
+                ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
+            }
+        }
+
+        deafeatedCharacterParty.RemoveFromParty(character);
     }
 
     public void Loot(Party losingParty)

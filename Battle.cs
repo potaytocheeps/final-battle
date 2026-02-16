@@ -43,6 +43,33 @@ public class Battle
     {
         foreach (Character character in currentPlayer.Party.Characters)
         {
+            foreach (StatusEffect statusEffect in character.StatusEffects.Values)
+            {
+                statusEffect.Resolve(character);
+                ConsoleIOHandler.WaitForPlayerConfirmation();
+            }
+
+            // Check if character died from a status effect
+            if (character.CurrentHP <= 0)
+            {
+                // Opposing player loots character's gear, if they had any equipped
+                if (character.HasGearEquipped)
+                {
+                    enemyPlayer.LootEnemyCharacter(character, deafeatedCharacterParty: currentPlayer.Party);
+                    ConsoleIOHandler.WaitForPlayerConfirmation();
+                }
+
+                // If this was the last character in the party, end the battle
+                if (currentPlayer.Party.Characters.Count == 0)
+                {
+                    _battleIsOver = true;
+                    return;
+                }
+
+                // Move to next character's turn
+                continue;
+            }
+
             if (currentPlayer.PlayerNumber == 1)
             {
                 ConsoleIOHandler.DisplayBattleStatus

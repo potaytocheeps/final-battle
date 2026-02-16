@@ -9,13 +9,15 @@ public abstract class Attack
     public AttackType AttackType { get; }
     public float HitChance { get; protected set; }
     private readonly DamageType _damageType;
+    private bool _givesStatusEffect;
 
-    public Attack(string name, AttackType attackType, DamageType damageType)
+    public Attack(string name, AttackType attackType, DamageType damageType, bool givesStatusEffect = false)
     {
         Name = name;
         AttackType = attackType;
         HitChance = 1; // By default, an attack has a 100% chance of hitting its target
         _damageType = damageType;
+        _givesStatusEffect = givesStatusEffect;
     }
 
     public virtual void DealDamage(Character user, Character attackTarget)
@@ -48,11 +50,28 @@ public abstract class Attack
         string damageType = _damageType.ToString().ToUpper();
 
         // Display results of having performed the attack
-        attackTarget.TakeDamage(damageAmount);
         ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
 
-        if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} are now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
-        else ColoredConsole.WriteLine($"{attackTarget} is now at {attackTarget.CurrentHP}/{attackTarget.MaxHP} HP.");
+        if (_givesStatusEffect) ApplyStatusEffect(attackTarget);
+
+        attackTarget.TakeDamage(damageAmount);
+    }
+
+    private void ApplyStatusEffect(Character attackTarget)
+    {
+        string statusEffectName = "";
+
+        switch (_damageType)
+        {
+            case DamageType.Poison:
+                StatusEffect statusEffect = new Poisoned();
+                attackTarget.ApplyStatusEffect(statusEffect);
+                statusEffectName = statusEffect.StatusEffectName;
+                break;
+        }
+
+        if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been {statusEffectName}.");
+        else ColoredConsole.WriteLine($"{attackTarget} has been {statusEffectName}.");
     }
 
     public abstract int CalculateDamage();
@@ -61,4 +80,4 @@ public abstract class Attack
 
 
 // Defines the different damage types that an attack can have
-public enum DamageType { Normal, Decoding }
+public enum DamageType { Normal, Decoding, Poison }

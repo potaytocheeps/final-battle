@@ -7,7 +7,7 @@ public class Party
     private List<Character> _characters;
     private List<Item> _items;
     private List<Gear> _gear;
-    public IReadOnlyList<Character> Characters => _characters;
+    public IReadOnlyList<Character> Characters => [.._characters];
     public IReadOnlyList<Item> ItemInventory => _items;
     public IReadOnlyList<Gear> GearInventory => _gear;
 

@@ -15,6 +15,8 @@ public abstract class Character
     public Dictionary<ModifierType, List<Modifier>> Modifiers => _modifiers;
     public bool HasDefensiveDamageModifier => _modifiers.ContainsKey(ModifierType.Defensive);
     public bool HasOffensiveDamageModifier => _modifiers.ContainsKey(ModifierType.Offensive);
+    private Dictionary<StatusEffectType, StatusEffect> _statusEffects;
+    public IReadOnlyDictionary<StatusEffectType, StatusEffect> StatusEffects => _statusEffects;
 
     public Character(string name, int maxHP, Gear? startingGear = null)
     {
@@ -24,6 +26,7 @@ public abstract class Character
         _attacks = [];
         _modifiers = [];
         _equippedGear = [];
+        _statusEffects = [];
 
         if (startingGear != null) EquipGear(startingGear, isStartingGear: true);
     }
@@ -44,6 +47,15 @@ public abstract class Character
     {
         if (CurrentHP - damageAmount <= 0) CurrentHP = 0;
         else CurrentHP -= damageAmount;
+
+        if (this is MylaraAndSkorin) ColoredConsole.WriteLine($"{this} are now at {CurrentHP}/{MaxHP} HP.");
+        else ColoredConsole.WriteLine($"{this} is now at {CurrentHP}/{MaxHP} HP.");
+
+        if (CurrentHP == 0)
+        {
+            if (this is MylaraAndSkorin) ColoredConsole.WriteLine($"{this} have been defeated!", ConsoleColor.Red);
+            else ColoredConsole.WriteLine($"{this} has been defeated!", ConsoleColor.Red);
+        }
     }
 
     public void UseItem(Character target, Item item)
@@ -122,6 +134,23 @@ public abstract class Character
                 }
             }
         }
+    }
+
+    public void ApplyStatusEffect(StatusEffect statusEffect)
+    {
+        if (!_statusEffects.ContainsKey(statusEffect.StatusEffectType))
+        {
+            _statusEffects.Add(statusEffect.StatusEffectType, statusEffect);
+        }
+        else
+        {
+            _statusEffects[statusEffect.StatusEffectType] = statusEffect;
+        }
+    }
+
+    public void RemoveStatusEffect(StatusEffect statusEffect)
+    {
+        _statusEffects.Remove(statusEffect.StatusEffectType);
     }
 
     public override string ToString() => Name.ToUpper();
