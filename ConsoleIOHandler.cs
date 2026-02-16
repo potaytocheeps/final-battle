@@ -1,4 +1,4 @@
-public class ConsoleIOHandler()
+public static class ConsoleIOHandler
 {
     public static void DisplayBattleInfo(Player player1, Player player2, int battleNumber)
     {
@@ -39,7 +39,7 @@ public class ConsoleIOHandler()
             if (character == currentCharacter) ColoredConsole.Write($"{character}", ConsoleColor.Yellow);
             else ColoredConsole.Write($"{character}");
 
-            ColoredConsole.Write($" (HP: {character.CurrentHP}/{character.MaxHP})");
+            DisplayCharacterHealth(character);
 
             if (character.HasGearEquipped)
             {
@@ -50,6 +50,15 @@ public class ConsoleIOHandler()
 
             ColoredConsole.WriteLine("");
         }
+    }
+
+    private static void DisplayCharacterHealth(Character character)
+    {
+        float currentHealthPercentage = (float)character.CurrentHP / character.MaxHP;
+
+        ColoredConsole.Write($" (HP: {character.CurrentHP}/{character.MaxHP})");
+        if (currentHealthPercentage <= 0.20f) ColoredConsole.Write($"[!]", ConsoleColor.Red);
+        else if (currentHealthPercentage <= 0.40f) ColoredConsole.Write($"[!]", ConsoleColor.Yellow);
     }
 
     public static void DisplaySelectionMenu(List<string> selectionOptions, bool isSubMenu = true)
