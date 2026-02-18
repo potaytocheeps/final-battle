@@ -61,13 +61,17 @@ public abstract class Attack
     {
         string statusEffectName = "";
 
-        switch (_damageType)
+        StatusEffect? statusEffect = _damageType switch
         {
-            case DamageType.Poison:
-                StatusEffect statusEffect = new Poisoned();
-                attackTarget.ApplyStatusEffect(statusEffect);
-                statusEffectName = statusEffect.StatusEffectName;
-                break;
+            DamageType.Poison   => new Poisoned(),
+            DamageType.Electric => new Electrified(),
+            _                   => null
+        };
+
+        if (statusEffect != null)
+        {
+            attackTarget.ApplyStatusEffect(statusEffect);
+            statusEffectName = statusEffect.StatusEffectName;
         }
 
         if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been {statusEffectName}.");
@@ -80,4 +84,4 @@ public abstract class Attack
 
 
 // Defines the different damage types that an attack can have
-public enum DamageType { Normal, Decoding, Poison }
+public enum DamageType { Normal, Decoding, Poison, Electric }

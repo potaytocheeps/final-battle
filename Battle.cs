@@ -53,6 +53,8 @@ public class Battle
         {
             foreach (StatusEffect statusEffect in character.StatusEffects.Values)
             {
+                if (statusEffect is Electrified) continue;
+
                 statusEffect.Resolve(character);
                 ConsoleIOHandler.WaitForPlayerConfirmation();
             }
@@ -101,6 +103,14 @@ public class Battle
 
             ColoredConsole.WriteLine($"Player {currentPlayer.PlayerNumber}");
             ColoredConsole.WriteLine($"It is {character}'s turn...");
+
+            // If this character is electrified, they will forfeit their turn
+            if (character.StatusEffects.ContainsKey(StatusEffectType.Electrified))
+            {
+                character.StatusEffects[StatusEffectType.Electrified].Resolve(character);
+                ConsoleIOHandler.WaitForPlayerConfirmation();
+                continue;
+            }
 
             currentPlayer.TakeTurn(character, enemyPlayer, RoundNumber);
 

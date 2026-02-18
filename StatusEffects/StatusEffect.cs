@@ -4,15 +4,16 @@
 /// </summary>
 public abstract class StatusEffect
 {
-    protected abstract DamageType DamageType { get; }
-    protected abstract int Damage { get; }
-    protected abstract string Name { get; }
+    protected virtual DamageType DamageType { get; }
+    protected virtual int Damage { get; }
+    protected virtual string Name { get; }
     public abstract StatusEffectType StatusEffectType { get; }
     public int NumberOfTurns { get; private set; }
     public string StatusEffectName => StatusEffectType.ToString().ToUpper();
 
     public StatusEffect(int numberOfTurns)
     {
+        Name = "";
         NumberOfTurns = numberOfTurns;
     }
 
@@ -30,4 +31,4 @@ public abstract class StatusEffect
 
 
 // Defines all of the different types of status effects
-public enum StatusEffectType { Poisoned }
+public enum StatusEffectType { Poisoned, Electrified }
