@@ -56,7 +56,11 @@ public abstract class Player
 
         currentCharacter.Attack(attack, attackTarget);
 
-        if (attackTarget.CurrentHP == 0) LootEnemyCharacter(attackTarget, deafeatedCharacterParty: enemyParty);
+        if (attackTarget.CurrentHP == 0)
+        {
+            LootEnemyCharacter(attackTarget);
+            enemyParty.RemoveFromParty(attackTarget);
+        }
 
         return true;
     }
@@ -119,7 +123,7 @@ public abstract class Player
         return true;
     }
 
-    public void LootEnemyCharacter(Character character, Party deafeatedCharacterParty)
+    public void LootEnemyCharacter(Character character)
     {
         // Loot the defeated character's equipped gear
         if (character.EquippedGear != null)
@@ -131,8 +135,6 @@ public abstract class Player
                 ColoredConsole.WriteLine($"{gear} was added to Player {PlayerNumber} party's inventory.");
             }
         }
-
-        deafeatedCharacterParty.RemoveFromParty(character);
     }
 
     public void Loot(Party losingParty)

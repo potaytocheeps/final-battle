@@ -65,9 +65,11 @@ public class Battle
                 // Opposing player loots character's gear, if they had any equipped
                 if (character.HasGearEquipped)
                 {
-                    enemyPlayer.LootEnemyCharacter(character, deafeatedCharacterParty: currentPlayer.Party);
+                    enemyPlayer.LootEnemyCharacter(character);
                     ConsoleIOHandler.WaitForPlayerConfirmation();
                 }
+
+                currentPlayer.Party.RemoveFromParty(character);
 
                 // If this was the last character in the party, end the battle
                 if (currentPlayer.Party.Characters.Count == 0)
