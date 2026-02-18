@@ -181,5 +181,10 @@ public abstract class Character
         _statusEffects.Remove(statusEffect.StatusEffectType);
     }
 
+    public void RemoveAllStatusEffects()
+    {
+        _statusEffects = [];
+    }
+
     public override string ToString() => Name.ToUpper();
 }

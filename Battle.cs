@@ -26,8 +26,16 @@ public class Battle
         }
 
         // After the battle, the winning player loots the losing player's party for any unused items and unequipped gear
-        if (_player1.Party.Characters.Count > 0) _player1.Loot(_player2.Party);
-        else _player2.Loot(_player1.Party);
+        if (_player1.Party.Characters.Count > 0)
+        {
+            _player1.Loot(_player2.Party);
+            RemoveWinningPartyStatusEffects(_player1.Party);
+        }
+        else
+        {
+            _player2.Loot(_player1.Party);
+            RemoveWinningPartyStatusEffects(_player2.Party);
+        }
     }
 
     public void PlayRound()
@@ -105,6 +113,14 @@ public class Battle
                 _battleIsOver = true;
                 return;
             }
+        }
+    }
+
+    private void RemoveWinningPartyStatusEffects(Party winningParty)
+    {
+        foreach (Character character in winningParty.Characters)
+        {
+            character.RemoveAllStatusEffects();
         }
     }
 }
