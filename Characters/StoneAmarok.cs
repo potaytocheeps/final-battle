@@ -15,4 +15,9 @@ public class StoneAmarok : Character
         _attacks.Insert(0, new Bite());
         _modifiers.Add(ModifierType.Defensive, [new StoneArmor()]);
     }
+
+    public StoneAmarok(Gear? startingGear, Modifier? startingModifier, int maxHP) : base("Stone Amarok", startingGear, startingModifier, maxHP)
+    {
+        _attacks.Insert(0, new Bite());
+    }
 }

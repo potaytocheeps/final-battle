@@ -31,6 +31,34 @@ public abstract class Character
         if (startingGear != null) EquipGear(startingGear, isStartingGear: true);
     }
 
+    public Character(string name, Gear? startingGear, Modifier? startingModifier, int maxHP)
+    {
+        Name = name;
+        MaxHP = maxHP;
+        CurrentHP = maxHP;
+        _attacks = [];
+        _modifiers = [];
+        _equippedGear = [];
+        _statusEffects = [];
+
+        if (startingGear != null)
+        {
+            EquipGear(startingGear, isStartingGear: true);
+        }
+
+        if (startingModifier != null)
+        {
+            if (_modifiers.ContainsKey(startingModifier.ModifierType))
+            {
+                _modifiers[startingModifier.ModifierType].Add(startingModifier);
+            }
+            else
+            {
+                _modifiers.Add(startingModifier.ModifierType, [startingModifier]);
+            }
+        }
+    }
+
     public void Attack(Attack attack, Character attackTarget)
     {
         // Determine whether attack will land, based on its hit chance

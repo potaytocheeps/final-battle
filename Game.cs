@@ -11,7 +11,7 @@ public class Game
     public Game(string name, GameplayMode gameplayMode)
     {
         List<Character> playerParty = [new TrueProgrammer(name), new VinFletcher(), new MylaraAndSkorin()];
-        List<Item> heroPartyItems = [new SmallHealthPotion(), new SmallHealthPotion(), new SimulasSoup()];
+        List<Item> heroPartyItems = [new SmallHealthPotion(), new SmallHealthPotion(), new SmallHealthPotion(), new SimulasSoup(), new SimulasSoup()];
         List<Item> enemyPartyItems = [new SmallHealthPotion()];
         Party defaultHeroParty = new Party
         (
@@ -24,19 +24,25 @@ public class Game
             [
                 new Party // Battle 1
                 (
-                    characters: [new Skeleton(new Dagger()), new ShadowOctopoid()],
+                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy)],
                     startingItems: enemyPartyItems,
-                    startingGear: []
+                    startingGear: [new Sword(), new Dagger()]
                 ),
                 new Party // Battle 2
                 (
-                    characters: [new Skeleton(1), new Skeleton(2)],
+                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium)],
                     startingItems: enemyPartyItems,
-                    startingGear: [new Dagger(), new Dagger()]
+                    startingGear: [new Dagger(), new BinaryHelm()]
                 ),
                 new Party // Battle 3
                 (
-                    characters: [new StoneAmarok(1), new StoneAmarok(2)],
+                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
+                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Hard)],
                     startingItems: enemyPartyItems,
                     startingGear: []
                 ),
@@ -102,3 +108,6 @@ public class Game
         ColoredConsole.WriteLine("The heroes won! The Uncoded One's reign is finally over!", ConsoleColor.Green);
     }
 }
+
+
+public enum Difficulty { Easy, Medium, Hard }

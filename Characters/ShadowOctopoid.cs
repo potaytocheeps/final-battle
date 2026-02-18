@@ -7,4 +7,9 @@ public class ShadowOctopoid : Character
     {
         _attacks.Insert(0, new Grapple());
     }
+
+    public ShadowOctopoid(Gear? startingGear, Modifier? startingModifier, int maxHP) : base("Shadow Octopoid", startingGear, startingModifier, maxHP)
+    {
+        _attacks.Insert(0, new Grapple());
+    }
 }
