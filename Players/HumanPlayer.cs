@@ -33,12 +33,6 @@ public class HumanPlayer : Player
 
     protected override bool TrySelectAttack(Character currentCharacter, out Attack selectedAttack)
     {
-        if (currentCharacter.Attacks.Count == 1)
-        {
-            selectedAttack = currentCharacter.Attacks.First();
-            return true;
-        }
-
         List<string> selectionOptions = [];
 
         foreach (Attack attack in currentCharacter.Attacks)
