@@ -3,5 +3,5 @@
 /// </summary>
 public class Stab : SpecialAttack
 {
-    public Stab() : base("Stab", DamageType.Poison, givesStatusEffect: true) { }
+    public Stab() : base("Stab", DamageType.Poison) { }
 }

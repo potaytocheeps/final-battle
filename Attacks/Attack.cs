@@ -10,14 +10,21 @@ public abstract class Attack
     public float HitChance { get; protected set; }
     private readonly DamageType _damageType;
     private bool _givesStatusEffect;
+    private float _statusEffectChance;
 
-    public Attack(string name, AttackType attackType, DamageType damageType, bool givesStatusEffect = false)
+    public Attack(string name, AttackType attackType, DamageType damageType)
     {
         Name = name;
         AttackType = attackType;
         HitChance = 1; // By default, an attack has a 100% chance of hitting its target
         _damageType = damageType;
-        _givesStatusEffect = givesStatusEffect;
+        _givesStatusEffect = false;
+
+        if (_damageType != DamageType.Normal && _damageType != DamageType.Decoding)
+        {
+            _givesStatusEffect = true;
+            _statusEffectChance = GetStatusEffectChance();
+        }
     }
 
     public virtual void DealDamage(Character user, Character attackTarget)
@@ -52,7 +59,10 @@ public abstract class Attack
         // Display results of having performed the attack
         ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
 
-        if (_givesStatusEffect) ApplyStatusEffect(attackTarget);
+        if (_givesStatusEffect)
+        {
+            if (Random.Shared.NextSingle() < _statusEffectChance) ApplyStatusEffect(attackTarget);
+        }
 
         attackTarget.TakeDamage(damageAmount);
     }
@@ -76,6 +86,16 @@ public abstract class Attack
 
         if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been {statusEffectName}.");
         else ColoredConsole.WriteLine($"{attackTarget} has been {statusEffectName}.");
+    }
+
+    public float GetStatusEffectChance()
+    {
+        return _damageType switch
+        {
+            DamageType.Electric => 0.33f, // 33% chance of applying its status effect onto the target
+            DamageType.Poison   => 0.50f, // 50% chance
+            _                   => 0,
+        };
     }
 
     public abstract int CalculateDamage();
