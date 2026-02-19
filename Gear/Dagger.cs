@@ -4,5 +4,5 @@
 /// </summary>
 public class Dagger : Gear
 {
-    public Dagger() : base("Dagger", new Stab()) { }
+    public Dagger(DamageType damageType = DamageType.Normal) : base($"{damageType} Dagger", new Stab(damageType)) { }
 }

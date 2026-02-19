@@ -3,5 +3,5 @@
 /// </summary>
 public class Slash : SpecialAttack
 {
-    public Slash() : base("Slash", DamageType.Electric) { }
+    public Slash(DamageType damageType) : base("Slash", damageType) { }
 }

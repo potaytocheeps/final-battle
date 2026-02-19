@@ -39,7 +39,7 @@ public class Party
     }
 
     public int GetItemTypeCount(Item itemToCheck) => _items.FindAll(item => item.GetType() == itemToCheck.GetType()).Count;
-    public int GetGearTypeCount(Gear gear) => _gear.FindAll(item => item.GetType() == gear.GetType()).Count;
+    public int GetGearTypeCount(Gear gear) => _gear.FindAll(item => item.Name == gear.Name).Count;
     public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.GetType()).ToList();
-    public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.GetType()).ToList();
+    public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.Name).ToList();
 }

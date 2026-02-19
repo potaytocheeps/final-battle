@@ -3,5 +3,5 @@
 /// </summary>
 public class Stab : SpecialAttack
 {
-    public Stab() : base("Stab", DamageType.Poison) { }
+    public Stab(DamageType damageType) : base("Stab", damageType) { }
 }

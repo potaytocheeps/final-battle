@@ -33,12 +33,13 @@ public static class RandomCharacterGenerator
     {
         int random = Random.Shared.Next(Enum.GetNames<GearType>().Count());
         GearType randomGearType = (GearType)random;
+        DamageType randomDamageType = GetRandomDamageType();
 
         return randomGearType switch
         {
             GearType.BinaryHelm => new BinaryHelm(),
-            GearType.Dagger     => new Dagger(),
-            GearType.Sword      => new Sword(),
+            GearType.Dagger     => new Dagger(randomDamageType),
+            GearType.Sword      => new Sword(randomDamageType),
             _                   => new Dagger()
         };
     }
@@ -68,5 +69,16 @@ public static class RandomCharacterGenerator
             ModifierType.StoneArmor => new StoneArmor(),
             _                       => new DamageBuff()
         };
+    }
+
+    private static DamageType GetRandomDamageType()
+    {
+        while (true)
+        {
+            int random = Random.Shared.Next(Enum.GetNames<DamageType>().Count());
+            DamageType randomDamageType = (DamageType)random;
+
+            if (randomDamageType != DamageType.Decoding) return randomDamageType;
+        }
     }
 }

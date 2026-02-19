@@ -43,7 +43,12 @@ public class HumanPlayer : Player
 
         foreach (Attack attack in currentCharacter.Attacks)
         {
-            selectionOptions.Add($"{attack}");
+            if (attack.DamageType != DamageType.Normal)
+            {
+                string damageType = attack.DamageType.ToString().ToUpper();
+                selectionOptions.Add($"{damageType} {attack}");
+            }
+            else selectionOptions.Add($"{attack}");
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);

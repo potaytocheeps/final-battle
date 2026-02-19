@@ -8,7 +8,7 @@ public abstract class Attack
     public int Damage { get; protected set; }
     public AttackType AttackType { get; }
     public float HitChance { get; protected set; }
-    private readonly DamageType _damageType;
+    public DamageType DamageType { get; }
     private bool _givesStatusEffect;
     private float _statusEffectChance;
 
@@ -17,10 +17,10 @@ public abstract class Attack
         Name = name;
         AttackType = attackType;
         HitChance = 1; // By default, an attack has a 100% chance of hitting its target
-        _damageType = damageType;
+        DamageType = damageType;
         _givesStatusEffect = false;
 
-        if (_damageType != DamageType.Normal && _damageType != DamageType.Decoding)
+        if (DamageType != DamageType.Normal && DamageType != DamageType.Decoding)
         {
             _givesStatusEffect = true;
             _statusEffectChance = GetStatusEffectChance();
@@ -40,7 +40,7 @@ public abstract class Attack
 
             foreach (Modifier modifier in offensiveModifiers)
             {
-                damageAmount = modifier.CalculateModifiedDamage(user, damageAmount, _damageType);
+                damageAmount = modifier.CalculateModifiedDamage(user, damageAmount, DamageType);
             }
         }
 
@@ -50,11 +50,11 @@ public abstract class Attack
 
             foreach (Modifier modifier in defensiveModifiers)
             {
-                damageAmount = modifier.CalculateModifiedDamage(attackTarget, damageAmount, _damageType);
+                damageAmount = modifier.CalculateModifiedDamage(attackTarget, damageAmount, DamageType);
             }
         }
 
-        string damageType = _damageType.ToString().ToUpper();
+        string damageType = DamageType.ToString().ToUpper();
 
         // Display results of having performed the attack
         ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
@@ -71,7 +71,7 @@ public abstract class Attack
     {
         string statusEffectName = "";
 
-        StatusEffect? statusEffect = _damageType switch
+        StatusEffect? statusEffect = DamageType switch
         {
             DamageType.Poison   => new Poisoned(),
             DamageType.Electric => new Electrified(),
@@ -90,7 +90,7 @@ public abstract class Attack
 
     public float GetStatusEffectChance()
     {
-        return _damageType switch
+        return DamageType switch
         {
             DamageType.Electric => 0.33f, // 33% chance of applying its status effect onto the target
             DamageType.Poison   => 0.50f, // 50% chance

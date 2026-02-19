@@ -4,5 +4,5 @@
 /// </summary>
 public class Sword : Gear
 {
-    public Sword() : base("Sword", new Slash()) { }
+    public Sword(DamageType damageType = DamageType.Normal) : base($"{damageType} Sword", new Slash(damageType)) { }
 }
