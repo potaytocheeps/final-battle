@@ -4,16 +4,16 @@
 /// </summary>
 public abstract class StatusEffect
 {
+    private string _name;
     public virtual DamageType DamageType { get; }
     protected virtual int Damage { get; }
-    protected virtual string Name { get; }
     public abstract StatusEffectType StatusEffectType { get; }
     public int NumberOfTurns { get; private set; }
     public string StatusEffectName => StatusEffectType.ToString().ToUpper();
 
-    public StatusEffect(int numberOfTurns)
+    public StatusEffect(int numberOfTurns, string name = "")
     {
-        Name = "";
+        _name = name;
         NumberOfTurns = numberOfTurns;
     }
 
@@ -29,6 +29,8 @@ public abstract class StatusEffect
 
         if (NumberOfTurns <= 0) target.RemoveStatusEffect(this);
     }
+
+    public override string ToString() => _name.ToUpper();
 }
 
 

@@ -93,6 +93,12 @@ public abstract class Character
             case HealthPotion potion:
                 potion.Heal(user: this, healTarget: target);
                 break;
+            case CurePotion curePotion:
+                curePotion.Cure(user: this, target: target);
+                break;
+            default:
+                ColoredConsole.WriteLine("Nothing happened.");
+                break;
         }
     }
 
@@ -178,7 +184,10 @@ public abstract class Character
 
     public void RemoveStatusEffect(StatusEffect statusEffect)
     {
-        _statusEffects.Remove(statusEffect.StatusEffectType);
+        if (_statusEffects.ContainsKey(statusEffect.StatusEffectType))
+        {
+            _statusEffects.Remove(statusEffect.StatusEffectType);
+        }
     }
 
     public void RemoveAllStatusEffects()

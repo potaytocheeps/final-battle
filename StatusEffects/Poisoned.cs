@@ -4,14 +4,12 @@
 /// </summary>
 public class Poisoned : StatusEffect
 {
-    protected override string Name { get; }
     protected override int Damage { get; }
     public override DamageType DamageType => DamageType.Poison;
     public override StatusEffectType StatusEffectType => StatusEffectType.Poisoned;
 
-    public Poisoned() : base(numberOfTurns: 3)
+    public Poisoned() : base(numberOfTurns: 3, "Poison")
     {
-        Name = "Poison";
         Damage = 1;
     }
 
@@ -24,6 +22,4 @@ public class Poisoned : StatusEffect
         ColoredConsole.WriteLine($"{this} dealt {TextColor.ColorText($"{Damage} {damageType}", DamageType)} damage to {target}.");
         target.TakeDamage(Damage);
     }
-
-    public override string ToString() => Name.ToUpper();
 }

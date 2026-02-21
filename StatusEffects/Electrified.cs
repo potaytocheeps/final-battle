@@ -7,7 +7,7 @@ public class Electrified : StatusEffect
     public override StatusEffectType StatusEffectType => StatusEffectType.Electrified;
     public override DamageType DamageType => DamageType.Electric;
 
-    public Electrified() : base(numberOfTurns: 1) { }
+    public Electrified() : base(numberOfTurns: 1, "Electrification") { }
 
     public override void Resolve(Character target)
     {
@@ -15,6 +15,4 @@ public class Electrified : StatusEffect
 
         ColoredConsole.WriteLine($"{target} CAN'T MOVE!");
     }
-
-    public override string ToString() => Name.ToUpper();
 }
