@@ -40,6 +40,7 @@ public static class ConsoleIOHandler
             else ColoredConsole.Write($"{character}");
 
             DisplayCharacterHealth(character);
+            if (character.StatusEffects.Count > 0) DisplayStatusEffects(character);
 
             if (character.HasGearEquipped)
             {
@@ -59,6 +60,22 @@ public static class ConsoleIOHandler
         ColoredConsole.Write($" (HP: {character.CurrentHP}/{character.MaxHP})");
         if (currentHealthPercentage <= 0.20f) ColoredConsole.Write($"[!]", ConsoleColor.Red);
         else if (currentHealthPercentage <= 0.40f) ColoredConsole.Write($"[!]", ConsoleColor.Yellow);
+    }
+
+    private static void DisplayStatusEffects(Character character)
+    {
+        List<string> statusEffects = [];
+
+        foreach (StatusEffect statusEffect in character.StatusEffects.Values)
+        {
+            char firstLetter = statusEffect.StatusEffectName[0];
+
+            statusEffects.Add(TextColor.ColorText(firstLetter.ToString(), statusEffect.DamageType));
+        }
+
+        string statusEffectsText = string.Join(", ", statusEffects);
+
+        ColoredConsole.Write($" [{statusEffectsText}]");
     }
 
     public static void DisplaySelectionMenu(List<string> selectionOptions, bool isSubMenu = true)

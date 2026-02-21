@@ -6,7 +6,7 @@ public class Poisoned : StatusEffect
 {
     protected override string Name { get; }
     protected override int Damage { get; }
-    protected override DamageType DamageType => DamageType.Poison;
+    public override DamageType DamageType => DamageType.Poison;
     public override StatusEffectType StatusEffectType => StatusEffectType.Poisoned;
 
     public Poisoned() : base(numberOfTurns: 3)

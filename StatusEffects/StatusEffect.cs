@@ -4,7 +4,7 @@
 /// </summary>
 public abstract class StatusEffect
 {
-    protected virtual DamageType DamageType { get; }
+    public virtual DamageType DamageType { get; }
     protected virtual int Damage { get; }
     protected virtual string Name { get; }
     public abstract StatusEffectType StatusEffectType { get; }
