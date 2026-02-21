@@ -9,11 +9,13 @@ public abstract class Attack
     public AttackType AttackType { get; }
     public float HitChance { get; protected set; }
     public DamageType DamageType { get; }
+    public int NumberOfUsesLeft { get; protected set; }
     private bool _givesStatusEffect;
     private float _statusEffectChance;
 
     public Attack(string name, AttackType attackType, DamageType damageType)
     {
+        NumberOfUsesLeft = 0;
         Name = name;
         AttackType = attackType;
         HitChance = 1; // By default, an attack has a 100% chance of hitting its target

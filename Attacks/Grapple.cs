@@ -22,7 +22,7 @@ public class Grapple : StandardAttack
 
                 ColoredConsole.WriteLine($"\n{user} stole {gearToSteal} from {attackTarget}!", ConsoleColor.DarkYellow);
 
-                attackTarget.UnequipGear(gearToSteal, gearWasStolen: true);
+                attackTarget.UnequipGear(gearToSteal, gearWasLost: true);
                 user.EquipGear(gearToSteal);
             }
         }

@@ -37,12 +37,21 @@ public class HumanPlayer : Player
 
         foreach (Attack attack in currentCharacter.Attacks)
         {
+            string selectionOption = "";
+
             if (attack.DamageType != DamageType.Normal)
             {
-                string damageType = attack.DamageType.ToString().ToUpper();
-                selectionOptions.Add($"{damageType} {attack}");
+                selectionOption = $"{attack.DamageType.ToString().ToUpper()} ";
             }
-            else selectionOptions.Add($"{attack}");
+
+            selectionOption += $"{attack}";
+
+            if (attack.NumberOfUsesLeft >= 1)
+            {
+                selectionOption += $" (Uses left: {attack.NumberOfUsesLeft})";
+            }
+
+            selectionOptions.Add(selectionOption);
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
@@ -115,8 +124,20 @@ public class HumanPlayer : Player
 
         foreach (Gear gear in gearOptions)
         {
-            if (isEquipMenu) selectionOptions.Add($"{gear.Name} ({Party.GetGearTypeCount(gear)})");
-            else selectionOptions.Add($"{gear.Name}");
+            string selectionOption = $"{gear.Name}";
+
+            if (gear.AttackProvided != null) // This gear is a weapon that provides a special attack
+            {
+                selectionOption += $" (Uses left: {gear.AttackProvided.NumberOfUsesLeft})";
+            }
+
+            if (isEquipMenu)
+            {
+                int gearTypeCount = Party.GetGearTypeCount(gear);
+                if (gearTypeCount > 1) selectionOption += $" (x{gearTypeCount})";
+            }
+
+            selectionOptions.Add(selectionOption);
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);

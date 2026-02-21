@@ -38,8 +38,20 @@ public class Party
         if (_gear.Contains(gear)) _gear.Remove(gear);
     }
 
+    // Given a specific type of gear, such as a "fire sword", gets the count of all
+    // the other gear in the player's inventory that share the same name and the same
+    // number of uses left as the gear that was provided
+    public int GetGearTypeCount(Gear gear) => _gear.FindAll
+    (
+        g => g.Name == gear.Name &&
+             g.AttackProvided?.NumberOfUsesLeft == gear.AttackProvided?.NumberOfUsesLeft
+    ).Count;
+
     public int GetItemTypeCount(Item itemToCheck) => _items.FindAll(item => item.GetType() == itemToCheck.GetType()).Count;
-    public int GetGearTypeCount(Gear gear) => _gear.FindAll(item => item.Name == gear.Name).Count;
     public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.GetType()).ToList();
-    public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.Name).ToList();
+
+    // Unique gear is characterized as a combination of both a gear's name and its number of uses left.
+    // For example, if there are two "poison daggers" in the player's inventory, but they differ in their
+    // number of uses left, then they will be considered different (unique)
+    public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.Name + gear.AttackProvided?.NumberOfUsesLeft).ToList();
 }
