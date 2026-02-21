@@ -21,7 +21,7 @@ public class Poisoned : StatusEffect
 
         string damageType = DamageType.ToString().ToUpper();
 
-        ColoredConsole.WriteLine($"{this} dealt {Damage} {damageType} damage to {target}.");
+        ColoredConsole.WriteLine($"{this} dealt {TextColor.ColorText($"{Damage} {damageType}", DamageType)} damage to {target}.");
         target.TakeDamage(Damage);
     }
 

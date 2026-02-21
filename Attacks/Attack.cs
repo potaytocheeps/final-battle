@@ -59,7 +59,7 @@ public abstract class Attack
         string damageType = DamageType.ToString().ToUpper();
 
         // Display results of having performed the attack
-        ColoredConsole.WriteLine($"{this} dealt {damageAmount} {damageType} damage to {attackTarget}.");
+        ColoredConsole.WriteLine($"{this} dealt {TextColor.ColorText($"{damageAmount} {damageType}", DamageType)} damage to {attackTarget}.");
 
         if (_givesStatusEffect)
         {
@@ -86,8 +86,10 @@ public abstract class Attack
             statusEffectName = statusEffect.StatusEffectName;
         }
 
-        if (attackTarget is MylaraAndSkorin) ColoredConsole.WriteLine($"{attackTarget} have been {statusEffectName}.");
-        else ColoredConsole.WriteLine($"{attackTarget} has been {statusEffectName}.");
+        if (attackTarget is MylaraAndSkorin) ColoredConsole.Write($"{attackTarget} have been ");
+        else ColoredConsole.Write($"{attackTarget} has been ");
+
+        ColoredConsole.WriteLine($"{TextColor.ColorText(statusEffectName, DamageType)}.");
     }
 
     public float GetStatusEffectChance()

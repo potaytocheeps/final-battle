@@ -19,8 +19,10 @@ public abstract class StatusEffect
 
     public virtual void Resolve(Character target)
     {
-        if (target is MylaraAndSkorin) ColoredConsole.Write($"{target} are {StatusEffectName}.");
-        else ColoredConsole.Write($"{target} is {StatusEffectName}.");
+        if (target is MylaraAndSkorin) ColoredConsole.Write($"{target} are ");
+        else ColoredConsole.Write($"{target} is ");
+
+        ColoredConsole.Write($"{TextColor.ColorText(StatusEffectName, DamageType)}.");
 
         NumberOfTurns--;
         ColoredConsole.WriteLine($" (TURNS LEFT: {NumberOfTurns})", ConsoleColor.Red);

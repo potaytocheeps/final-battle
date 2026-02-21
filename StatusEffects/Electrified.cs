@@ -5,6 +5,7 @@
 public class Electrified : StatusEffect
 {
     public override StatusEffectType StatusEffectType => StatusEffectType.Electrified;
+    protected override DamageType DamageType => DamageType.Electric;
 
     public Electrified() : base(numberOfTurns: 1) { }
 
