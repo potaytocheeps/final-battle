@@ -7,7 +7,7 @@ public class Electrified : StatusEffect
     public override StatusEffectType StatusEffectType => StatusEffectType.Electrified;
     public override DamageType DamageType => DamageType.Electric;
 
-    public Electrified() : base(numberOfTurns: 1, "Electrification") { }
+    public Electrified() : base("Electrification", numberOfTurns: 1) { }
 
     public override void Resolve(Character target)
     {

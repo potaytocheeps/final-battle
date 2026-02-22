@@ -78,15 +78,15 @@ public abstract class Attack
         // Display results of having performed the attack
         ColoredConsole.WriteLine($"{this} dealt {TextColor.ColorText($"{damageAmount} {damageType}", DamageType)} damage to {attackTarget}.");
 
-        if (_givesStatusEffect)
+        if (_givesStatusEffect && damageAmount > 0)
         {
-            if (Random.Shared.NextSingle() < _statusEffectChance) ApplyStatusEffect(attackTarget);
+            if (Random.Shared.NextSingle() < _statusEffectChance) ApplyStatusEffect(attackTarget, damageAmount);
         }
 
         attackTarget.TakeDamage(damageAmount);
     }
 
-    private void ApplyStatusEffect(Character attackTarget)
+    private void ApplyStatusEffect(Character attackTarget, int damageAmount)
     {
         string statusEffectName = "";
         StatusEffect? statusEffect;
@@ -105,7 +105,7 @@ public abstract class Attack
 
         statusEffect = damageType switch
         {
-            DamageType.Poison   => new Poisoned(),
+            DamageType.Poison   => new Poisoned(damageAmount),
             DamageType.Electric => new Electrified(),
             DamageType.Fire     => new Burned(attackTarget.MaxHP),
             _                   => null
@@ -128,8 +128,8 @@ public abstract class Attack
         return DamageType switch
         {
             DamageType.Electric => 0.33f, // 33% chance of applying its status effect onto the target
-            DamageType.Poison   => 0.50f, // 50% chance
-            DamageType.Fire     => 0.40f, // 40% chance
+            DamageType.Poison   => 0.33f, // 33% chance
+            DamageType.Fire     => 0.33f, // 33% chance
             DamageType.Decoding => 0.75f, // 75% chance
             _                   => 0,
         };
