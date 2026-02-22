@@ -4,5 +4,8 @@
 /// </summary>
 public class Dagger : Gear
 {
-    public Dagger(DamageType damageType = DamageType.Normal) : base($"{damageType} Dagger", new Stab(damageType)) { }
+    public Dagger(DamageType damageType = DamageType.Physical) : base("Dagger", new Stab(damageType))
+    {
+        if (damageType != DamageType.Physical) Name = $"{damageType} Dagger";
+    }
 }

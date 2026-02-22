@@ -39,7 +39,7 @@ public class HumanPlayer : Player
         {
             string selectionOption = "";
 
-            if (attack.DamageType != DamageType.Normal)
+            if (attack.DamageType != DamageType.Physical)
             {
                 selectionOption = $"{attack.DamageType.ToString().ToUpper()} ";
             }

@@ -3,7 +3,7 @@
 /// </summary>
 public abstract class Gear
 {
-    public string Name { get; }
+    public string Name { get; protected set; }
     public Attack? AttackProvided { get; }
     protected List<Modifier> Modifiers { get; set; }
     public IReadOnlyList<Modifier> ModifiersProvided => Modifiers;

@@ -16,7 +16,7 @@ public static class TextColor
     {
         string coloredText = damageType switch
         {
-            DamageType.Normal   => PHYSICAL,
+            DamageType.Physical => PHYSICAL,
             DamageType.Poison   => POISON,
             DamageType.Electric => ELECTRIC,
             DamageType.Fire     => FIRE,

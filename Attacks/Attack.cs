@@ -22,7 +22,7 @@ public abstract class Attack
         DamageType = damageType;
         _givesStatusEffect = false;
 
-        if (DamageType != DamageType.Normal && DamageType != DamageType.Decoding)
+        if (DamageType != DamageType.Physical && DamageType != DamageType.Decoding)
         {
             _givesStatusEffect = true;
             _statusEffectChance = GetStatusEffectChance();
@@ -110,4 +110,4 @@ public abstract class Attack
 
 
 // Defines the different damage types that an attack can have
-public enum DamageType { Normal, Decoding, Poison, Electric, Fire }
+public enum DamageType { Physical, Decoding, Poison, Electric, Fire }

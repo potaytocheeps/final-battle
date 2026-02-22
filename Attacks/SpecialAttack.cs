@@ -3,7 +3,7 @@
 /// </summary>
 public class SpecialAttack : Attack
 {
-    public SpecialAttack(string name, DamageType damageType = DamageType.Normal)
+    public SpecialAttack(string name, DamageType damageType = DamageType.Physical)
                   : base(name, AttackType.Special, damageType)
     {
         NumberOfUsesLeft = this switch
