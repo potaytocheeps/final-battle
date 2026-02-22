@@ -12,6 +12,7 @@ public abstract class Attack
     public int NumberOfUsesLeft { get; protected set; }
     private bool _givesStatusEffect;
     private float _statusEffectChance;
+    private float _criticalHitChance;
 
     public Attack(string name, AttackType attackType, DamageType damageType)
     {
@@ -27,6 +28,11 @@ public abstract class Attack
             _givesStatusEffect = true;
             _statusEffectChance = GetStatusEffectChance();
         }
+        else
+        {
+            // Physical attacks have a 20% chance to be a critical hit, dealing twice the damage
+            _criticalHitChance = 0.20f;
+        }
     }
 
     public virtual void DealDamage(Character user, Character attackTarget)
@@ -34,6 +40,17 @@ public abstract class Attack
         // The damage that an attack deals can vary per turn. It should be calculated
         // each time the attack is used during a turn
         int damageAmount = CalculateDamage();
+
+        if (DamageType == DamageType.Physical)
+        {
+            bool isCriticalHit = Random.Shared.NextSingle() < _criticalHitChance;
+
+            if (isCriticalHit)
+            {
+                damageAmount *= 2;
+                ColoredConsole.WriteLine($"{this} was a critical hit!", ConsoleColor.Yellow);
+            }
+        }
 
         // Modify damage amount if attack target has any damage modifiers
         if (user.HasOffensiveDamageModifier)
