@@ -77,6 +77,7 @@ public abstract class Attack
         {
             DamageType.Poison   => new Poisoned(),
             DamageType.Electric => new Electrified(),
+            DamageType.Fire     => new Burned(attackTarget.MaxHP),
             _                   => null
         };
 
@@ -98,6 +99,7 @@ public abstract class Attack
         {
             DamageType.Electric => 0.33f, // 33% chance of applying its status effect onto the target
             DamageType.Poison   => 0.50f, // 50% chance
+            DamageType.Fire     => 0.40f, // 40% chance
             _                   => 0,
         };
     }
@@ -108,4 +110,4 @@ public abstract class Attack
 
 
 // Defines the different damage types that an attack can have
-public enum DamageType { Normal, Decoding, Poison, Electric }
+public enum DamageType { Normal, Decoding, Poison, Electric, Fire }

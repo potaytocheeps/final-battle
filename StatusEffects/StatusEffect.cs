@@ -35,4 +35,4 @@ public abstract class StatusEffect
 
 
 // Defines all of the different types of status effects
-public enum StatusEffectType { Poisoned, Electrified }
+public enum StatusEffectType { Poisoned, Electrified, Burned }
