@@ -76,7 +76,10 @@ public class ComputerPlayer : Player
 
     public override bool TrySelectGear(IReadOnlyList<Gear> _, out Gear gear, bool __)
     {
-        gear = Party.GearInventory.First();
+        int randomGearIndex = Random.Shared.Next(Party.GearInventory.Count);
+
+        // Equip a random piece of gear from inventory
+        gear = Party.GearInventory[randomGearIndex];
         return true;
     }
 }
