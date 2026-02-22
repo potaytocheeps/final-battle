@@ -89,7 +89,7 @@ public abstract class Character
     public void UseItem(Character target, Item item)
     {
         if (target == this) ColoredConsole.WriteLine($"{this} used {item}.");
-        else ColoredConsole.WriteLine($"{this} used {item} on {target}");
+        else ColoredConsole.WriteLine($"{this} used {item} on {target}.");
 
         switch (item)
         {
@@ -97,7 +97,7 @@ public abstract class Character
                 potion.Heal(user: this, healTarget: target);
                 break;
             case CurePotion curePotion:
-                curePotion.Cure(user: this, target: target);
+                curePotion.Cure(target);
                 break;
             default:
                 ColoredConsole.WriteLine("Nothing happened.");

@@ -5,12 +5,12 @@ public abstract class CurePotion : Item
 {
     private StatusEffectType _statusEffectType;
 
-    public CurePotion(string name, StatusEffectType statusEffectType) : base(name)
+    public CurePotion(string name, StatusEffectType statusEffectType = StatusEffectType.Burned) : base(name)
     {
         _statusEffectType = statusEffectType;
     }
 
-    public void Cure(Character user, Character target)
+    public virtual void Cure(Character target)
     {
         if (target.StatusEffects.ContainsKey(_statusEffectType))
         {
