@@ -43,11 +43,27 @@ public class ComputerPlayer : Player
 
     protected override bool TrySelectAttack(Character currentCharacter, out Attack attack)
     {
-        attack = currentCharacter.Attacks.FirstOrDefault
-        (
-            attack => attack.AttackType == AttackType.Special, // Return special attack, if character has one
-            defaultValue: currentCharacter.Attacks.First() // Otherwise, return the character's standard attack
-        );
+        if (currentCharacter.Attacks.Count == 1)
+        {
+            attack = currentCharacter.Attacks.First();
+            return true;
+        }
+
+        // Shadow Octopoids and Stone Amaroks may occasionally use their standard attack
+        // to take advantage of their standard attacks' side effects
+        if (currentCharacter is ShadowOctopoid || currentCharacter is StoneAmarok)
+        {
+            // Character has a 70% chance to use special attack and 30% chance of using standard attack
+            bool willUseSpecialAttack = Random.Shared.NextSingle() < 0.70f;
+
+            if (willUseSpecialAttack) attack = currentCharacter.Attacks.First(a => a.AttackType == AttackType.Special);
+            else attack = currentCharacter.Attacks.First(a => a.AttackType == AttackType.Standard);
+
+            return true;
+        }
+
+        // Any other character will always use their special attack over their standard attack
+        attack = currentCharacter.Attacks.First(a => a.AttackType == AttackType.Special);
 
         return true;
     }
