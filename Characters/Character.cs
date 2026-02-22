@@ -88,6 +88,9 @@ public abstract class Character
 
     public void UseItem(Character target, Item item)
     {
+        if (target == this) ColoredConsole.WriteLine($"{this} used {item}.");
+        else ColoredConsole.WriteLine($"{this} used {item} on {target}");
+
         switch (item)
         {
             case HealthPotion potion:

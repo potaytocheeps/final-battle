@@ -17,7 +17,6 @@ public abstract class CurePotion : Item
             StatusEffect statusEffect = target.StatusEffects[_statusEffectType];
             target.RemoveStatusEffect(statusEffect);
 
-            ColoredConsole.WriteLine($"{user} used {this}.");
             ColoredConsole.WriteLine($"{this} cures {target} from {statusEffect}!");
         }
         else

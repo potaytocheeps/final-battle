@@ -67,31 +67,31 @@ public class HumanPlayer : Player
         return true;
     }
 
-    protected override bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget)
+    protected override bool TrySelectTarget(Party party, out Character target)
     {
-        if (enemyParty.Characters.Count == 1)
+        if (party.Characters.Count == 1)
         {
-            attackTarget = enemyParty.Characters.First();
+            target = party.Characters.First();
             return true;
         }
 
         List<string> selectionOptions = [];
 
-        foreach (Character character in enemyParty.Characters)
+        foreach (Character character in party.Characters)
         {
             selectionOptions.Add(character.Name);
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
-        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: enemyParty.Characters.Count, prompt: "Select the target: ");
+        int selection = ConsoleIOHandler.AskUserForSelection(numberOfOptions: party.Characters.Count, prompt: "Select the target: ");
 
-        if (selection >= enemyParty.Characters.Count)
+        if (selection >= party.Characters.Count)
         {
-            attackTarget = enemyParty.Characters.First();
+            target = party.Characters.First();
             return false;
         }
 
-        attackTarget = enemyParty.Characters[selection];
+        target = party.Characters[selection];
         return true;
     }
 

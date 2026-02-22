@@ -52,18 +52,25 @@ public class ComputerPlayer : Player
         return true;
     }
 
-    protected override bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget)
+    protected override bool TrySelectTarget(Party party, out Character target)
     {
         // Randomly select a character from the enemy player's party
-        int enemyPartySize = enemyParty.Characters.Count;
-        int randomIndex = Random.Shared.Next(enemyPartySize);
-        attackTarget = enemyParty.Characters[randomIndex];
+        int partySize = party.Characters.Count;
+        int randomIndex = Random.Shared.Next(partySize);
+        target = party.Characters[randomIndex];
+        return true;
+    }
+
+    protected override bool TrySelectItemTarget(Character currentCharacter, Party currentParty, Item item, out Character target)
+    {
+        // Use item on self
+        target = currentCharacter;
         return true;
     }
 
     public override bool TrySelectItem(out Item item)
     {
-        item = Party.ItemInventory.First();
+        item = Party.ItemInventory.FirstOrDefault(i => i is HealthPotion, Party.ItemInventory.First());
         return true;
     }
 

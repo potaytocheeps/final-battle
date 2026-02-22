@@ -26,7 +26,7 @@ public abstract class Player
             case ActionType.Attack:
                 return TryPerformAttack(currentCharacter, enemyPlayer.Party);
             case ActionType.UseItem:
-                return TryPerformItemUse(currentCharacter);
+                return TryPerformItemUse(currentCharacter, Party);
             case ActionType.Equip:
                 return TryPerformGearEquip(currentCharacter);
             case ActionType.Unequip:
@@ -49,7 +49,7 @@ public abstract class Player
 
             if (!attackWasSelected) return false;
 
-            bool attackTargetWasSelected = TrySelectAttackTarget(enemyParty, out attackTarget);
+            bool attackTargetWasSelected = TrySelectTarget(enemyParty, out attackTarget);
 
             if (attackTargetWasSelected) break;
         }
@@ -65,7 +65,7 @@ public abstract class Player
         return true;
     }
 
-    private bool TryPerformItemUse(Character currentCharacter)
+    private bool TryPerformItemUse(Character currentCharacter, Party currentParty)
     {
         if (Party.ItemInventory.Count <= 0) // There are no more items in party's inventory
         {
@@ -73,15 +73,22 @@ public abstract class Player
             return false; // Action could not be completed. Ask player to select an action again
         }
 
-        bool itemWasSelected = TrySelectItem(out Item? item);
+        Item item;
+        Character target;
 
-        if (!itemWasSelected) return false;
-
-        if (item != null)
+        while (true)
         {
-            currentCharacter.UseItem(target: currentCharacter, item);
-            Party.RemoveItemFromInventory(item);
+            bool itemWasSelected = TrySelectItem(out item);
+
+            if (!itemWasSelected) return false;
+
+            bool targetWasSelected = TrySelectItemTarget(currentCharacter, currentParty, item, out target);
+
+            if (targetWasSelected) break;
         }
+
+        currentCharacter.UseItem(target, item);
+        Party.RemoveItemFromInventory(item);
 
         return true;
     }
@@ -194,10 +201,15 @@ public abstract class Player
         }
     }
 
+    protected virtual bool TrySelectItemTarget(Character currentCharacter, Party party, Item item, out Character target)
+    {
+        return TrySelectTarget(party, out target);
+    }
+
     public abstract void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound);
     protected abstract ActionType SelectAction(Character currentCharacter);
     protected abstract bool TrySelectAttack(Character currentCharacter, out Attack attack);
-    protected abstract bool TrySelectAttackTarget(Party enemyParty, out Character attackTarget);
-    public abstract bool TrySelectItem(out Item? item);
+    protected abstract bool TrySelectTarget(Party party, out Character target);
+    public abstract bool TrySelectItem(out Item item);
     public abstract bool TrySelectGear(IReadOnlyList<Gear> gearOptions, out Gear gear, bool isEquipMenu = true);
 }
