@@ -83,6 +83,7 @@ public abstract class Attack
             if (Random.Shared.NextSingle() < _statusEffectChance) ApplyStatusEffect(attackTarget, damageAmount);
         }
 
+        Damage = damageAmount;
         attackTarget.TakeDamage(damageAmount);
     }
 
