@@ -47,11 +47,11 @@ public class Party
              g.AttackProvided?.NumberOfUsesLeft == gear.AttackProvided?.NumberOfUsesLeft
     ).Count;
 
-    public int GetItemTypeCount(Item itemToCheck) => _items.FindAll(item => item.GetType() == itemToCheck.GetType()).Count;
-    public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.GetType()).ToList();
-
     // Unique gear is characterized as a combination of both a gear's name and its number of uses left.
     // For example, if there are two "poison daggers" in the player's inventory, but they differ in their
     // number of uses left, then they will be considered different (unique)
     public List<Gear> GetListOfUniqueGearInInventory() => _gear.DistinctBy((gear) => gear.Name + gear.AttackProvided?.NumberOfUsesLeft).ToList();
+
+    public int GetItemTypeCount(Item itemToCheck) => _items.FindAll(item => item.Name == itemToCheck.Name).Count;
+    public List<Item> GetListOfUniqueItemsInInventory() => _items.DistinctBy((item) => item.Name).ToList();
 }

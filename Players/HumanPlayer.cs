@@ -102,7 +102,12 @@ public class HumanPlayer : Player
 
         foreach (Item item in uniqueItems)
         {
-            selectionOptions.Add($"{item.Name} ({Party.GetItemTypeCount(item)})");
+            string selectionOption = $"{item.Name}";
+
+            int itemTypeCount = Party.GetItemTypeCount(item);
+            if (itemTypeCount > 1) selectionOption += $" (x{itemTypeCount})";
+
+            selectionOptions.Add(selectionOption);
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
