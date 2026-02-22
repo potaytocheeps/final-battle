@@ -178,7 +178,12 @@ public abstract class Player
         // Display items looted
         foreach (Item item in uniqueItems)
         {
-            ColoredConsole.WriteLine($"- {item} ({losingParty.GetItemTypeCount(item)})");
+            string itemLooted = $"{item.Name}";
+
+            int itemTypeCount = losingParty.GetItemTypeCount(item);
+            if (itemTypeCount > 1) itemLooted += $" (x{itemTypeCount})";
+
+            ColoredConsole.WriteLine($"- {itemLooted}");
         }
     }
 
@@ -197,7 +202,12 @@ public abstract class Player
         // Display gear looted
         foreach (Gear gear in uniqueGear)
         {
-            ColoredConsole.WriteLine($"- {gear} ({losingParty.GetGearTypeCount(gear)})");
+            string gearLooted = $"{gear.Name}";
+
+            int gearTypeCount = losingParty.GetGearTypeCount(gear);
+            if (gearTypeCount > 1) gearLooted += $" (x{gearTypeCount})";
+
+            ColoredConsole.WriteLine($"- {gearLooted}");
         }
     }
 
