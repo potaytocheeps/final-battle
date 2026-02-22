@@ -22,7 +22,7 @@ public abstract class Attack
         DamageType = damageType;
         _givesStatusEffect = false;
 
-        if (DamageType != DamageType.Physical && DamageType != DamageType.Decoding)
+        if (DamageType != DamageType.Physical)
         {
             _givesStatusEffect = true;
             _statusEffectChance = GetStatusEffectChance();
@@ -72,8 +72,21 @@ public abstract class Attack
     private void ApplyStatusEffect(Character attackTarget)
     {
         string statusEffectName = "";
+        StatusEffect? statusEffect;
+        DamageType damageType = DamageType;
 
-        StatusEffect? statusEffect = DamageType switch
+        // A damage type of Decoding will randomly inflict one of the available status
+        // effects onto the target of the attack
+        if (DamageType == DamageType.Decoding)
+        {
+            while (damageType == DamageType.Physical || damageType == DamageType.Decoding)
+            {
+                int random = Random.Shared.Next(Enum.GetNames<DamageType>().Count());
+                damageType = (DamageType)random;
+            }
+        }
+
+        statusEffect = damageType switch
         {
             DamageType.Poison   => new Poisoned(),
             DamageType.Electric => new Electrified(),
@@ -90,7 +103,7 @@ public abstract class Attack
         if (attackTarget is MylaraAndSkorin) ColoredConsole.Write($"{attackTarget} have been ");
         else ColoredConsole.Write($"{attackTarget} has been ");
 
-        ColoredConsole.WriteLine($"{TextColor.ColorText(statusEffectName, DamageType)}.");
+        ColoredConsole.WriteLine($"{TextColor.ColorText(statusEffectName, damageType)}.");
     }
 
     public float GetStatusEffectChance()
@@ -100,6 +113,7 @@ public abstract class Attack
             DamageType.Electric => 0.33f, // 33% chance of applying its status effect onto the target
             DamageType.Poison   => 0.50f, // 50% chance
             DamageType.Fire     => 0.40f, // 40% chance
+            DamageType.Decoding => 0.75f, // 75% chance
             _                   => 0,
         };
     }
