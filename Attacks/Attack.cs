@@ -41,7 +41,9 @@ public abstract class Attack
         // each time the attack is used during a turn
         int damageAmount = CalculateDamage();
 
-        if (DamageType == DamageType.Physical)
+        // Determine if Physical damage type attack was a critical hit.
+        // To be able to land a critical hit, an attack must deal at least 1 damage
+        if (DamageType == DamageType.Physical && damageAmount > 0)
         {
             bool isCriticalHit = Random.Shared.NextSingle() < _criticalHitChance;
 
