@@ -10,7 +10,7 @@ public abstract class HealthPotion : Item
         _healAmount = healAmount;
     }
 
-    public virtual void Heal(Character user, Character healTarget)
+    public virtual void Heal(Character healTarget)
     {
         healTarget.Heal(_healAmount);
         ColoredConsole.WriteLine($"{this} heals {healTarget} for {_healAmount} HP.");

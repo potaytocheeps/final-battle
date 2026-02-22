@@ -94,7 +94,7 @@ public abstract class Character
         switch (item)
         {
             case HealthPotion potion:
-                potion.Heal(user: this, healTarget: target);
+                potion.Heal(target);
                 break;
             case CurePotion curePotion:
                 curePotion.Cure(target);
