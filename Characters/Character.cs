@@ -120,7 +120,11 @@ public abstract class Character
         if (!isStartingGear)
         {
             ColoredConsole.WriteLine($"{this} equipped {gearToEquip} and gained:");
-            if (gearToEquip.AttackProvided != null) ColoredConsole.WriteLine($"- Special attack: {gearToEquip.AttackProvided}");
+
+            if (gearToEquip.AttackProvided != null)
+            {
+                ColoredConsole.WriteLine($"- Special attack:{GetAttackName(gearToEquip)}");
+            }
         }
 
         if (gearToEquip.ProvidesModifiers)
@@ -153,7 +157,8 @@ public abstract class Character
         if (gearToRemove.AttackProvided != null)
         {
             _attacks.Remove(gearToRemove.AttackProvided);
-            ColoredConsole.WriteLine($"- Special attack: {gearToRemove.AttackProvided}");
+
+            ColoredConsole.WriteLine($"- Special attack:{GetAttackName(gearToRemove)}");
         }
 
         if (gearToRemove.ProvidesModifiers)
@@ -199,4 +204,16 @@ public abstract class Character
     }
 
     public override string ToString() => Name.ToUpper();
+
+    private string GetAttackName(Gear gear)
+    {
+        string attackName = "";
+
+        if (gear.AttackProvided?.DamageType != DamageType.Physical)
+        {
+            attackName += $" {gear.AttackProvided?.DamageType.ToString().ToUpper()}";
+        }
+
+        return attackName += $" {gear.AttackProvided}";
+    }
 }

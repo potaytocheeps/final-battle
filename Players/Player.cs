@@ -178,7 +178,7 @@ public abstract class Player
         // Display items looted
         foreach (Item item in uniqueItems)
         {
-            string itemLooted = $"{item.Name}";
+            string itemLooted = $"{item}";
 
             int itemTypeCount = losingParty.GetItemTypeCount(item);
             if (itemTypeCount > 1) itemLooted += $" (x{itemTypeCount})";
@@ -202,7 +202,12 @@ public abstract class Player
         // Display gear looted
         foreach (Gear gear in uniqueGear)
         {
-            string gearLooted = $"{gear.Name}";
+            string gearLooted = $"{gear}";
+
+            if (gear.AttackProvided != null) // This gear is a weapon that provides a special attack
+            {
+                gearLooted += $" (Uses left: {gear.AttackProvided.NumberOfUsesLeft})";
+            }
 
             int gearTypeCount = losingParty.GetGearTypeCount(gear);
             if (gearTypeCount > 1) gearLooted += $" (x{gearTypeCount})";

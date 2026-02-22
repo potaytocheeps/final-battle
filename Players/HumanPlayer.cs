@@ -79,7 +79,7 @@ public class HumanPlayer : Player
 
         foreach (Character character in party.Characters)
         {
-            selectionOptions.Add(character.Name);
+            selectionOptions.Add(character.ToString());
         }
 
         ConsoleIOHandler.DisplaySelectionMenu(selectionOptions);
@@ -102,7 +102,7 @@ public class HumanPlayer : Player
 
         foreach (Item item in uniqueItems)
         {
-            string selectionOption = $"{item.Name}";
+            string selectionOption = $"{item}";
 
             int itemTypeCount = Party.GetItemTypeCount(item);
             if (itemTypeCount > 1) selectionOption += $" (x{itemTypeCount})";
@@ -129,7 +129,7 @@ public class HumanPlayer : Player
 
         foreach (Gear gear in gearOptions)
         {
-            string selectionOption = $"{gear.Name}";
+            string selectionOption = $"{gear}";
 
             if (gear.AttackProvided != null) // This gear is a weapon that provides a special attack
             {
