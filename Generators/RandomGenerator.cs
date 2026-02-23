@@ -1,8 +1,10 @@
-public static class RandomCharacterGenerator
+public static class RandomGenerator
 {
     private enum GearType { BinaryHelm, Dagger, Sword }
     private enum EnemyCharacterType { Skeleton, StoneAmarok, ShadowOctopoid }
     private enum ModifierType { DamageBuff, StoneArmor }
+    private enum ItemType { SmallHealthPotion, MediumHealthPotion, LargeHealthPotion, SimulasSoup,
+                            BurnCure, ElectrifiedCure, PoisonCure, CureAll }
 
     public static Character GetRandomEnemy(Difficulty characterDifficulty)
     {
@@ -29,11 +31,21 @@ public static class RandomCharacterGenerator
         return GetRandomEnemyCharacter(gear, modifier, maxHP);
     }
 
-    private static Gear GetRandomGear()
+    public static Gear GetRandomGear()
     {
-        int random = Random.Shared.Next(Enum.GetNames<GearType>().Count());
-        GearType randomGearType = (GearType)random;
-        DamageType randomDamageType = GetRandomDamageType();
+        GearType randomGearType;
+        DamageType randomDamageType;
+
+        while (true)
+        {
+            int random = Random.Shared.Next(Enum.GetNames<GearType>().Count());
+            randomGearType = (GearType)random;
+            randomDamageType = GetRandomDamageType();
+
+            if (randomGearType != GearType.BinaryHelm) break;
+            // There's a final 11% chance that the Binary Helm will be chosen
+            else if (Random.Shared.NextSingle() < 0.33f) break;
+        }
 
         return randomGearType switch
         {
@@ -80,5 +92,24 @@ public static class RandomCharacterGenerator
 
             if (randomDamageType != DamageType.Decoding) return randomDamageType;
         }
+    }
+
+    public static Item GetRandomItem()
+    {
+        int random = Random.Shared.Next(Enum.GetNames<ItemType>().Count());
+        ItemType randomItemType = (ItemType)random;
+
+        return randomItemType switch
+        {
+            ItemType.SmallHealthPotion  => new SmallHealthPotion(),
+            ItemType.MediumHealthPotion => new MediumHealthPotion(),
+            ItemType.LargeHealthPotion  => new LargeHealthPotion(),
+            ItemType.SimulasSoup        => new SimulasSoup(),
+            ItemType.BurnCure           => new BurnCure(),
+            ItemType.ElectrifiedCure    => new ElectrifiedCure(),
+            ItemType.PoisonCure         => new PoisonCure(),
+            ItemType.CureAll            => new CureAll(),
+            _                           => new SmallHealthPotion()
+        };
     }
 }

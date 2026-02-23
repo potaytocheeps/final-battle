@@ -8,64 +8,22 @@ public class Game
     private readonly List<Party> _enemyBattleParties;
     private Battle _battle;
 
-    public Game(string name, GameplayMode gameplayMode)
+    public Game(string name, PlayerMode playerMode)
     {
-        List<Character> playerParty = [new TrueProgrammer(name), new VinFletcher(), new MylaraAndSkorin()];
-        List<Item> heroPartyItems = [new SmallHealthPotion(), new SmallHealthPotion(), new SmallHealthPotion(), new SimulasSoup(), new SimulasSoup()];
-        List<Item> enemyPartyItems = [new SmallHealthPotion()];
-        Party defaultHeroParty = new Party
-        (
-            characters: playerParty,
-            startingItems: heroPartyItems,
-            startingGear: []
-        );
+        _enemyBattleParties = PartyGenerator.GenerateParties(Difficulty.Hard);
 
-        _enemyBattleParties =
-            [
-                new Party // Battle 1
-                (
-                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy)],
-                    startingItems: enemyPartyItems,
-                    startingGear: [new Sword(), new Dagger()]
-                ),
-                new Party // Battle 2
-                (
-                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Easy),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium)],
-                    startingItems: enemyPartyItems,
-                    startingGear: [new Dagger(), new BinaryHelm()]
-                ),
-                new Party // Battle 3
-                (
-                    characters: [RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Medium),
-                                 RandomCharacterGenerator.GetRandomEnemy(Difficulty.Hard)],
-                    startingItems: enemyPartyItems,
-                    startingGear: []
-                ),
-                new Party // Final Battle
-                (
-                    characters: [new TheUncodedOne()],
-                    startingItems: [new SimulasSoup()],
-                    startingGear: new ()
-                )
-            ];
-
-        switch (gameplayMode)
+        switch (playerMode)
         {
-            case GameplayMode.HumanVsComputer:
-                _player1 = new HumanPlayer(defaultHeroParty);
+            case PlayerMode.HumanVsComputer:
+                _player1 = new HumanPlayer(GetHeroParty(name));
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
                 break;
-            case GameplayMode.HumanVsHuman:
-                _player1 = new HumanPlayer(defaultHeroParty);
+            case PlayerMode.HumanVsHuman:
+                _player1 = new HumanPlayer(GetHeroParty(name));
                 _player2 = new HumanPlayer(_enemyBattleParties[0]);
                 break;
             default:
-                _player1 = new ComputerPlayer(defaultHeroParty);
+                _player1 = new ComputerPlayer(GetHeroParty(name));
                 _player2 = new ComputerPlayer(_enemyBattleParties[0]);
                 break;
         }
@@ -106,6 +64,18 @@ public class Game
 
         // Hero party emerged victorious from all battles
         ColoredConsole.WriteLine("The heroes won! The Uncoded One's reign is finally over!", ConsoleColor.Green);
+    }
+
+    private Party GetHeroParty(string name)
+    {
+        return new Party
+        (
+            characters: [new TrueProgrammer(name), new VinFletcher(), new MylaraAndSkorin()],
+            startingItems: [new SmallHealthPotion(), new SmallHealthPotion(),
+                            new MediumHealthPotion(), new LargeHealthPotion(),
+                            new BurnCure(), new PoisonCure(), new ElectrifiedCure()],
+            startingGear: []
+        );
     }
 }
 

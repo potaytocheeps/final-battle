@@ -127,4 +127,37 @@ public static class ConsoleIOHandler
         // Deletes the previous line printed to the console and returns to the beginning of that line
         Console.Write("\r" + new string(' ', Console.BufferWidth) + "\r");
     }
+
+    public static void DisplayTitle()
+    {
+        ColoredConsole.WriteLine("""
+        ==========================================================
+        ||                                                      ||
+        ||                  The Final Battle                    ||
+        ||                                                      ||
+        ==========================================================
+        """);
+    }
+
+    public static PlayerMode SelectPlayerMode()
+    {
+        ColoredConsole.WriteLine("""
+        This game can be played in the following ways:
+        1 - Human vs. Computer
+        2 - Human vs. Human
+        3 - Computer vs. Computer
+        """, ConsoleColor.Gray);
+
+        while (true)
+        {
+            string input = ColoredConsole.PromptUser("Make your selection: ", ConsoleColor.Gray);
+
+            if (int.TryParse(input, out int choice))
+            {
+                if (choice >= 1 && choice <= 3) return (PlayerMode)choice;
+            }
+
+            ColoredConsole.WriteLine("Invalid input. Please enter one of the available choices (1-3).", ConsoleColor.DarkRed);
+        }
+    }
 }
