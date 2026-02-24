@@ -19,6 +19,8 @@ public class Battle
 
     public void Play()
     {
+        Console.Clear();
+
         while (!_battleIsOver)
         {
             PlayRound();
@@ -51,6 +53,8 @@ public class Battle
     {
         foreach (Character character in currentPlayer.Party.Characters)
         {
+            Console.Clear();
+
             if (currentPlayer.PlayerNumber == 1)
             {
                 ConsoleIOHandler.DisplayBattleStatus

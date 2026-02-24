@@ -38,6 +38,8 @@ public class Game
 
         while (true)
         {
+            Console.Clear();
+
             // Display current battle information
             ConsoleIOHandler.DisplayBattleInfo(_player1, _player2, battleNumber: currentBattleIndex + 1);
             ConsoleIOHandler.WaitForPlayerConfirmation();
