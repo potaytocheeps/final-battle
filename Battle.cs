@@ -51,37 +51,6 @@ public class Battle
     {
         foreach (Character character in currentPlayer.Party.Characters)
         {
-            foreach (StatusEffect statusEffect in character.StatusEffects.Values)
-            {
-                if (statusEffect is Electrified) continue;
-
-                statusEffect.Resolve(character);
-                ConsoleIOHandler.WaitForPlayerConfirmation();
-            }
-
-            // Check if character died from a status effect
-            if (character.CurrentHP <= 0)
-            {
-                // Opposing player loots character's gear, if they had any equipped
-                if (character.HasGearEquipped)
-                {
-                    enemyPlayer.LootEnemyCharacter(character);
-                    ConsoleIOHandler.WaitForPlayerConfirmation();
-                }
-
-                currentPlayer.Party.RemoveFromParty(character);
-
-                // If this was the last character in the party, end the battle
-                if (currentPlayer.Party.Characters.Count == 0)
-                {
-                    _battleIsOver = true;
-                    return;
-                }
-
-                // Move to next character's turn
-                continue;
-            }
-
             if (currentPlayer.PlayerNumber == 1)
             {
                 ConsoleIOHandler.DisplayBattleStatus
@@ -118,6 +87,25 @@ public class Battle
 
             // Allow player to see the results of the turn and continue when they are ready
             ConsoleIOHandler.WaitForPlayerConfirmation();
+
+            foreach (StatusEffect statusEffect in character.StatusEffects.Values)
+            {
+                statusEffect.Resolve(character);
+                ConsoleIOHandler.WaitForPlayerConfirmation();
+            }
+
+            // Check if character died from a status effect
+            if (character.CurrentHP <= 0)
+            {
+                // Opposing player loots character's gear, if they had any equipped
+                if (character.HasGearEquipped)
+                {
+                    enemyPlayer.LootEnemyCharacter(character);
+                    ConsoleIOHandler.WaitForPlayerConfirmation();
+                }
+
+                currentPlayer.Party.RemoveFromParty(character);
+            }
 
             // Check to see if either player's party has been completely defeated
             if (_player1.Party.Characters.Count == 0 || _player2.Party.Characters.Count == 0)
