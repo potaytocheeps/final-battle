@@ -35,13 +35,16 @@ public class Game
     {
         Console.Clear();
         int currentBattleIndex = 0;
+        bool isFinalBattle;
 
         while (true)
         {
             Console.Clear();
 
+            isFinalBattle = currentBattleIndex == _enemyBattleParties.Count - 1;
+
             // Display current battle information
-            ConsoleIOHandler.DisplayBattleInfo(_player1, _player2, battleNumber: currentBattleIndex + 1);
+            ConsoleIOHandler.DisplayBattleInfo(_player1, _player2, battleNumber: currentBattleIndex + 1, isFinalBattle);
             ConsoleIOHandler.WaitForPlayerConfirmation();
 
             _battle.Play();

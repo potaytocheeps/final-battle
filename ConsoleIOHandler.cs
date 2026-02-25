@@ -1,10 +1,16 @@
 public static class ConsoleIOHandler
 {
-    public static void DisplayBattleInfo(Player player1, Player player2, int battleNumber)
+    public static void DisplayBattleInfo(Player player1, Player player2, int battleNumber, bool isFinalBattle)
     {
         string player1Party = string.Join(", ", player1.Party.Characters);
         string player2Party = string.Join(", ", player2.Party.Characters);
         string battleInfo = $"BATTLE {battleNumber}: {player1Party} vs. {player2Party}";
+
+        if (isFinalBattle)
+        {
+            battleInfo = $"FINAL BATTLE: {player1Party} vs. {player2Party}";
+        }
+
         int characterCount = 6;
 
         ColoredConsole.WriteLine(new string('=', battleInfo.Count() + (characterCount * 2)) + "\n");
