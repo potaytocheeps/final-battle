@@ -84,6 +84,8 @@ public class Battle
             {
                 character.StatusEffects[StatusEffectType.Electrified].Resolve(character);
                 ConsoleIOHandler.WaitForPlayerConfirmation();
+
+                ResolveStatusEffects(character);
                 continue;
             }
 
@@ -92,23 +94,24 @@ public class Battle
             // Allow player to see the results of the turn and continue when they are ready
             ConsoleIOHandler.WaitForPlayerConfirmation();
 
-            foreach (StatusEffect statusEffect in character.StatusEffects.Values)
+            // If there are no characters left in the enemy party, the battle is over and
+            // this character will no longer take any damage from any status effects
+            if (enemyPlayer.Party.Characters.Count > 0)
             {
-                statusEffect.Resolve(character);
-                ConsoleIOHandler.WaitForPlayerConfirmation();
-            }
+                ResolveStatusEffects(character);
 
-            // Check if character died from a status effect
-            if (character.CurrentHP <= 0)
-            {
-                // Opposing player loots character's gear, if they had any equipped
-                if (character.HasGearEquipped)
+                // Check if character died from a status effect
+                if (character.CurrentHP <= 0)
                 {
-                    enemyPlayer.LootEnemyCharacter(character);
-                    ConsoleIOHandler.WaitForPlayerConfirmation();
-                }
+                    // Opposing player loots character's gear, if they had any equipped
+                    if (character.HasGearEquipped)
+                    {
+                        enemyPlayer.LootEnemyCharacter(character);
+                        ConsoleIOHandler.WaitForPlayerConfirmation();
+                    }
 
-                currentPlayer.Party.RemoveFromParty(character);
+                    currentPlayer.Party.RemoveFromParty(character);
+                }
             }
 
             // Check to see if either player's party has been completely defeated
@@ -125,6 +128,15 @@ public class Battle
         foreach (Character character in winningParty.Characters)
         {
             character.RemoveAllStatusEffects();
+        }
+    }
+
+    private void ResolveStatusEffects(Character character)
+    {
+        foreach (StatusEffect statusEffect in character.StatusEffects.Values)
+        {
+            statusEffect.Resolve(character);
+            ConsoleIOHandler.WaitForPlayerConfirmation();
         }
     }
 }

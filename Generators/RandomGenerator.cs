@@ -19,12 +19,12 @@ public static class RandomGenerator
                 break;
             case Difficulty.Medium:
                 gear = GetRandomGear();
-                maxHP = Random.Shared.Next(10, 19);
+                maxHP = Random.Shared.Next(12, 21);
                 break;
             case Difficulty.Hard:
                 gear = GetRandomGear();
                 modifier = GetRandomModifier();
-                maxHP = Random.Shared.Next(15, 21);
+                maxHP = Random.Shared.Next(15, 26);
                 break;
         }
 
@@ -43,8 +43,8 @@ public static class RandomGenerator
             randomDamageType = GetRandomDamageType();
 
             if (randomGearType != GearType.BinaryHelm) break;
-            // There's a final 11% chance that the Binary Helm will be chosen
-            else if (Random.Shared.NextSingle() < 0.33f) break;
+            // There's a final 5% chance that the Binary Helm will be chosen
+            else if (Random.Shared.NextSingle() < 0.15f) break;
         }
 
         return randomGearType switch
@@ -66,7 +66,7 @@ public static class RandomGenerator
             EnemyCharacterType.ShadowOctopoid => new ShadowOctopoid(startingGear, startingModifier, maxHP),
             EnemyCharacterType.Skeleton       => new Skeleton(startingGear, startingModifier, maxHP),
             EnemyCharacterType.StoneAmarok    => new StoneAmarok(startingGear, startingModifier, maxHP),
-            _                                 => new Skeleton()
+            _                                 => new Skeleton(null, null, 1)
         };
     }
 

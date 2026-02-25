@@ -3,7 +3,7 @@
 /// </summary>
 public class VinFletcher : Character
 {
-    public VinFletcher() : base("Vin Fletcher", maxHP: 15, new VinsBow())
+    public VinFletcher() : base("Vin Fletcher", maxHP: 30, new VinsBow())
     {
         _attacks.Insert(0, new Punch());
     }

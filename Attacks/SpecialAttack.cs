@@ -8,8 +8,8 @@ public class SpecialAttack : Attack
     {
         NumberOfUsesLeft = this switch
         {
-            Slash => 8,
-            Stab  => 12,
+            Slash => 5,
+            Stab  => 8,
             _     => 20
         };
     }
@@ -18,9 +18,9 @@ public class SpecialAttack : Attack
     {
         Damage = this switch
         {
-            Slash     => 2,
-            Stab      => 1,
-            QuickShot => 3,
+            Slash     => 3,
+            Stab      => 2,
+            QuickShot => 4,
             _         => 0
         };
 

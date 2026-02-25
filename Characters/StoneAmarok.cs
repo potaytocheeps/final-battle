@@ -4,18 +4,6 @@
 /// </summary>
 public class StoneAmarok : Character
 {
-    public StoneAmarok(Gear? startingGear = null) : base("Stone Amarok", maxHP: 4, startingGear)
-    {
-        _attacks.Insert(0, new Bite());
-        _modifiers.Add(ModifierType.Defensive, [new StoneArmor()]);
-    }
-
-    public StoneAmarok(int number, Gear? startingGear = null) : base($"Stone Amarok {number}", maxHP: 4, startingGear)
-    {
-        _attacks.Insert(0, new Bite());
-        _modifiers.Add(ModifierType.Defensive, [new StoneArmor()]);
-    }
-
     public StoneAmarok(Gear? startingGear, Modifier? startingModifier, int maxHP) : base("Stone Amarok", startingGear, startingModifier, maxHP)
     {
         _attacks.Insert(0, new Bite());

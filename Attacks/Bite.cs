@@ -9,7 +9,7 @@ public class Bite : StandardAttack
     {
         base.DealDamage(user, attackTarget);
 
-        if (user.CurrentHP != user.MaxHP)
+        if (Damage > 0 && user.CurrentHP != user.MaxHP)
         {
             // The attacker will heal the amount of damage they dealt to the target
             user.Heal(Damage);

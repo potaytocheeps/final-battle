@@ -9,9 +9,10 @@ public class StandardAttack : Attack
     {
         Damage = this switch
         {
-            Punch or Bite => 1,
-            BoneCrunch    => Random.Shared.Next(2),
-            Unraveling    => Random.Shared.Next(5),
+            Punch         => 1,
+            Bite          => 2,
+            BoneCrunch    => Random.Shared.Next(1, 4),
+            Unraveling    => Random.Shared.Next(4, 7),
             _             => 0
         };
 

@@ -4,14 +4,17 @@
 /// </summary>
 public class Burned : StatusEffect
 {
-    protected override int Damage { get; set; }
+    public override int Damage { get; protected set; }
     public override DamageType DamageType => DamageType.Fire;
     public override StatusEffectType StatusEffectType => StatusEffectType.Burned;
 
     public Burned(int attackTargetMaxHP) : base("Burn", numberOfTurns: 3)
     {
-        // Burn damage will be 10% of the target's max HP, or at least 1 damage
-        Damage = Math.Max(attackTargetMaxHP / 10, 1);
+        // Burn damage will be 5% of the target's max HP rounded up to the nearest
+        // integer, or at least 1 damage
+        int burnDamage = (int)Math.Ceiling(attackTargetMaxHP / 20f);
+
+        Damage = Math.Max(burnDamage, 1);
     }
 
     public override void Resolve(Character target)

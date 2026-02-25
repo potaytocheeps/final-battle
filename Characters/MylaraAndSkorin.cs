@@ -3,7 +3,7 @@
 /// </summary>
 public class MylaraAndSkorin : Character
 {
-    public MylaraAndSkorin() : base("Mylara & Skorin", maxHP: 12, new CannonOfConsolas())
+    public MylaraAndSkorin() : base("Mylara & Skorin", maxHP: 25, new CannonOfConsolas())
     {
         _attacks.Insert(0, new CannonShot());
     }

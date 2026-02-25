@@ -28,11 +28,13 @@ public abstract class Attack
             _givesStatusEffect = true;
             _statusEffectChance = GetStatusEffectChance();
         }
-        else
+
+        _criticalHitChance = DamageType switch
         {
-            // Physical attacks have a 20% chance to be a critical hit, dealing twice the damage
-            _criticalHitChance = 0.20f;
-        }
+            DamageType.Physical => 0.20f, // 20% chance to be a critical hit, dealing twice the damage
+            DamageType.Decoding => 0.10f, // 10% chance to be a critical hit
+            _                   => 0
+        };
     }
 
     public virtual void DealDamage(Character user, Character attackTarget)
@@ -41,9 +43,9 @@ public abstract class Attack
         // each time the attack is used during a turn
         int damageAmount = CalculateDamage();
 
-        // Determine if Physical damage type attack was a critical hit.
+        // Determine if Physical or Decoding damage type attack was a critical hit.
         // To be able to land a critical hit, an attack must deal at least 1 damage
-        if (DamageType == DamageType.Physical && damageAmount > 0)
+        if (damageAmount > 0 && (DamageType == DamageType.Physical || DamageType == DamageType.Decoding))
         {
             bool isCriticalHit = Random.Shared.NextSingle() < _criticalHitChance;
 
@@ -116,6 +118,17 @@ public abstract class Attack
 
         if (statusEffect != null)
         {
+            if (statusEffect.StatusEffectType == StatusEffectType.Poisoned)
+            {
+                // Check if target is already poisoned
+                if (attackTarget.StatusEffects.ContainsKey(statusEffect.StatusEffectType))
+                {
+                    // Do not overwrite poisoned status effect if the target is inflicted with a poisoned
+                    // status effect that deals more damage than this status effect to be applied
+                    if (attackTarget.StatusEffects[StatusEffectType.Poisoned].Damage > statusEffect.Damage) return;
+                }
+            }
+
             attackTarget.ApplyStatusEffect(statusEffect);
             statusEffectName = statusEffect.StatusEffectName;
         }

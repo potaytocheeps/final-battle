@@ -6,7 +6,7 @@ public class Grapple : StandardAttack
 {
     public Grapple() : base("Grapple") { }
 
-    public override int CalculateDamage() => 1;
+    public override int CalculateDamage() => 2;
 
     public override void DealDamage(Character user, Character attackTarget)
     {

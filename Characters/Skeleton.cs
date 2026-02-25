@@ -3,16 +3,6 @@
 /// </summary>
 public class Skeleton : Character
 {
-    public Skeleton(Gear? startingGear = null) : base("Skeleton", maxHP: 5, startingGear)
-    {
-        _attacks.Insert(0, new BoneCrunch());
-    }
-
-    public Skeleton(int number, Gear? startingGear = null) : base($"Skeleton {number}", maxHP: 5, startingGear)
-    {
-        _attacks.Insert(0, new BoneCrunch());
-    }
-
     public Skeleton(Gear? startingGear, Modifier? startingModifier, int maxHP) : base("Skeleton", startingGear, startingModifier, maxHP)
     {
         _attacks.Insert(0, new BoneCrunch());

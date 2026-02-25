@@ -4,7 +4,7 @@
 /// </summary>
 public class Poisoned : StatusEffect
 {
-    protected override int Damage { get; set; }
+    public override int Damage { get; protected set; }
     public override DamageType DamageType => DamageType.Poison;
     public override StatusEffectType StatusEffectType => StatusEffectType.Poisoned;
 

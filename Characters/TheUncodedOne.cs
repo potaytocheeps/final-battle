@@ -3,7 +3,7 @@
 /// </summary>
 public class TheUncodedOne : Character
 {
-    public TheUncodedOne() : base("The Uncoded One", maxHP: 120)
+    public TheUncodedOne(int maxHP) : base("The Uncoded One", maxHP)
     {
         _attacks.Insert(0, new Unraveling());
     }

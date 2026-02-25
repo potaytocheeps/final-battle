@@ -6,7 +6,7 @@ public abstract class StatusEffect
 {
     private string _name;
     public virtual DamageType DamageType { get; }
-    protected virtual int Damage { get; set; }
+    public virtual int Damage { get; protected set; }
     public abstract StatusEffectType StatusEffectType { get; }
     public int NumberOfTurns { get; private set; }
     public string StatusEffectName => StatusEffectType.ToString().ToUpper();

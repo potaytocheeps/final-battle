@@ -34,15 +34,7 @@ public static class PartyGenerator
             parties.Add(GenerateParty(characterDifficulties));
         }
 
-        parties.Add
-        (
-            new Party // Final Battle
-            (
-                characters: [new TheUncodedOne()],
-                startingItems: [new LargeHealthPotion(), new LargeHealthPotion(), new MediumHealthPotion(), new MediumHealthPotion()],
-                startingGear: []
-            )
-        );
+        parties.Add(GenerateFinalBattle(difficulty));
 
         return parties;
     }
@@ -57,6 +49,41 @@ public static class PartyGenerator
         }
 
         return new Party(characters, GetRandomStartingItems(), GetRandomStartingGear());
+    }
+
+    private static Party GenerateFinalBattle(Difficulty difficulty)
+    {
+        List<Character> characters = [];
+        List<Item> startingItems = [];
+
+        switch (difficulty)
+        {
+            case Difficulty.Easy:
+                characters    = [new TheUncodedOne(maxHP: 50)];
+                startingItems = [new MediumHealthPotion(), new MediumHealthPotion(), new SmallHealthPotion()];
+                break;
+            case Difficulty.Medium:
+                characters    = [new TheUncodedOne(maxHP: 60),
+                                 RandomGenerator.GetRandomEnemy(Difficulty.Medium)];
+                startingItems = [new MediumHealthPotion(), new MediumHealthPotion(), new LargeHealthPotion(),
+                                 new SmallHealthPotion(), new SmallHealthPotion(), new SmallHealthPotion()];
+                break;
+            case Difficulty.Hard:
+                characters    = [new TheUncodedOne(maxHP: 80),
+                                 RandomGenerator.GetRandomEnemy(Difficulty.Medium),
+                                 RandomGenerator.GetRandomEnemy(Difficulty.Hard)];
+                startingItems = [new SmallHealthPotion(), new MediumHealthPotion(), new LargeHealthPotion(),
+                                 new SmallHealthPotion(), new LargeHealthPotion(), new MediumHealthPotion(),
+                                 new SmallHealthPotion(), new SmallHealthPotion()];
+                break;
+        }
+
+        return new Party
+        (
+            characters: characters,
+            startingItems: startingItems,
+            startingGear: []
+        );
     }
 
     private static List<Item> GetRandomStartingItems(int numberOfItems = 5)

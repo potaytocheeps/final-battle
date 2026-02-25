@@ -25,16 +25,28 @@ public class ComputerPlayer : Player
 
             if (characterHealthIsUnderHalf)
             {
-                // There's a 25% chance that this character will use a potion
-                if (Random.Shared.Next(4) == 0) return ActionType.UseItem;
+                if (currentCharacter is TheUncodedOne)
+                {
+                    // The Uncoded One has a 40% chance to use a potion
+                    if (Random.Shared.NextSingle() < 0.40) return ActionType.UseItem;
+                }
+                else
+                {
+                    // There's a 25% chance that this character will use a potion
+                    if (Random.Shared.Next(4) == 0) return ActionType.UseItem;
+                }
             }
         }
 
         // Determine whether current character should equip gear
         if (Party.GearInventory.Count > 0 && !currentCharacter.HasGearEquipped)
         {
-            // There's a 50% chance that this character will equip gear
-            if (Random.Shared.Next(2) == 0) return ActionType.Equip;
+            // The Uncoded One character will not equip any gear
+            if (!(currentCharacter is TheUncodedOne))
+            {
+                // There's a 50% chance that this character will equip gear
+                if (Random.Shared.Next(2) == 0) return ActionType.Equip;
+            }
         }
 
         // Player will default to attacking, if no other action was executed
