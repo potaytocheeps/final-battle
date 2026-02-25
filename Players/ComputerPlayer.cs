@@ -98,7 +98,21 @@ public class ComputerPlayer : Player
 
     public override bool TrySelectItem(out Item item)
     {
-        item = Party.ItemInventory.FirstOrDefault(i => i is HealthPotion, Party.ItemInventory.First());
+        // Get list of all health potions in inventory
+        List<Item> healthPotions = Party.ItemInventory.ToList().FindAll(i => i is HealthPotion);
+
+        if (healthPotions.Count > 0)
+        {
+            // Select a random health potion from inventory
+            int randomIndex = Random.Shared.Next(healthPotions.Count);
+            item = healthPotions[randomIndex];
+        }
+        else
+        {
+            // There were no health potions in inventory. Select the first item in inventory
+            item = Party.ItemInventory.First();
+        }
+
         return true;
     }
 
