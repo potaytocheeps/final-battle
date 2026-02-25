@@ -141,23 +141,34 @@ public static class ConsoleIOHandler
 
     public static PlayerMode SelectPlayerMode()
     {
-        ColoredConsole.WriteLine("""
-        This game can be played in the following ways:
-        1 - Human vs. Computer
-        2 - Human vs. Human
-        3 - Computer vs. Computer
-        """, ConsoleColor.Gray);
+        ColoredConsole.WriteLine("This game can be played in the following ways:");
+        List<string> selectionOptions = ["Human vs. Computer", "Human vs. Human", "Computer vs. Computer"];
 
-        while (true)
+        DisplaySelectionMenu(selectionOptions, isSubMenu: false);
+
+        int selection = AskUserForSelection(selectionOptions.Count, "Select player mode: ", isSubMenu: false);
+
+        return (PlayerMode)selection;
+    }
+
+    public static bool TrySelectDifficulty(out Difficulty gameDifficulty)
+    {
+        ColoredConsole.WriteLine("\nThere are three difficulties.");
+        ColoredConsole.WriteLine("As you win a battle, the next one becomes more difficult.");
+        ColoredConsole.WriteLine("The last battle has you facing against the final boss: The Uncoded One");
+        List<string> selectionOptions = ["Easy (3 battles)", "Medium (5 battles)", "Hard (8 battles)"];
+
+        DisplaySelectionMenu(selectionOptions, isSubMenu: true);
+
+        int selection = AskUserForSelection(selectionOptions.Count, "Select difficulty: ", isSubMenu: true);
+
+        if (selection == selectionOptions.Count)
         {
-            string input = ColoredConsole.PromptUser("Make your selection: ", ConsoleColor.Gray);
-
-            if (int.TryParse(input, out int choice))
-            {
-                if (choice >= 1 && choice <= 3) return (PlayerMode)choice;
-            }
-
-            ColoredConsole.WriteLine("Invalid input. Please enter one of the available choices (1-3).", ConsoleColor.DarkRed);
+            gameDifficulty = Difficulty.Easy;
+            return false;
         }
+
+        gameDifficulty = (Difficulty)selection;
+        return true;
     }
 }

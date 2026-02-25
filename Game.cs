@@ -8,9 +8,9 @@ public class Game
     private readonly List<Party> _enemyBattleParties;
     private Battle _battle;
 
-    public Game(string name, PlayerMode playerMode)
+    public Game(string name, PlayerMode playerMode, Difficulty gameDifficulty)
     {
-        _enemyBattleParties = PartyGenerator.GenerateParties(Difficulty.Hard);
+        _enemyBattleParties = PartyGenerator.GenerateParties(gameDifficulty);
 
         switch (playerMode)
         {
