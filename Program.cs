@@ -1,22 +1,33 @@
-﻿PlayerMode playerMode;
-Difficulty gameDifficulty;
-
-while (true)
+﻿while (true)
 {
-    ConsoleIOHandler.DisplayTitle();
-    playerMode = ConsoleIOHandler.SelectPlayerMode();
-    bool difficultyWasSelected = ConsoleIOHandler.TrySelectDifficulty(out gameDifficulty);
+    PlayerMode playerMode;
+    Difficulty gameDifficulty;
 
-    if (difficultyWasSelected) break;
+    while (true)
+    {
+        ConsoleIOHandler.DisplayTitle();
+        playerMode = ConsoleIOHandler.SelectPlayerMode();
+        bool difficultyWasSelected = ConsoleIOHandler.TrySelectDifficulty(out gameDifficulty);
 
-    Console.Clear();
+        if (difficultyWasSelected) break;
+
+        Console.Clear();
+    }
+
+    ColoredConsole.WriteLine("");
+    string playerName = ColoredConsole.PromptUser("Enter the name for the True Programmer: ", ConsoleColor.Gray);
+
+    Game game = new Game(playerName, playerMode, gameDifficulty);
+    game.PlayGame();
+
+    bool wantsToPlayAgain = ConsoleIOHandler.TryPlayAgain();
+
+    if (!wantsToPlayAgain)
+    {
+        ColoredConsole.WriteLine("\n\nTHANKS FOR PLAYING!", ConsoleColor.Yellow);
+        break;
+    }
 }
-
-ColoredConsole.WriteLine("");
-string playerName = ColoredConsole.PromptUser("Enter the name for the True Programmer: ", ConsoleColor.Gray);
-
-Game game = new Game(playerName, playerMode, gameDifficulty);
-game.PlayGame();
 
 
 // Defines the different gameplay modes the player can choose for a match of the game

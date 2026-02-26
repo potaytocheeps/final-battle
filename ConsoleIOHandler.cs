@@ -120,7 +120,6 @@ public static class ConsoleIOHandler
 
             ColoredConsole.WriteLine($"Invalid input. Please select one of the available options (1-{numberOfOptions}).",
                                      ConsoleColor.DarkRed);
-            continue;
         }
     }
 
@@ -176,5 +175,28 @@ public static class ConsoleIOHandler
 
         gameDifficulty = (Difficulty)selection;
         return true;
+    }
+
+    public static bool TryPlayAgain()
+    {
+        WaitForPlayerConfirmation();
+        ColoredConsole.WriteLine("");
+
+        while (true)
+        {
+            string input = ColoredConsole.PromptUser("Would you like to play again? ").ToLower();
+
+            if (input == "y" || input == "yes")
+            {
+                Console.Clear();
+                return true;
+            }
+            else if (input == "n" || input == "no")
+            {
+                return false;
+            }
+
+            ColoredConsole.WriteLine("Invalid input. Please enter either 'y' or 'n'.", ConsoleColor.DarkRed);
+        }
     }
 }

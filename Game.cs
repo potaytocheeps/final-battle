@@ -15,16 +15,16 @@ public class Game
         switch (playerMode)
         {
             case PlayerMode.HumanVsComputer:
-                _player1 = new HumanPlayer(GetHeroParty(name));
-                _player2 = new ComputerPlayer(_enemyBattleParties[0]); // Start with the first enemy party
+                _player1 = new HumanPlayer(GetHeroParty(name), playerNumber: 1);
+                _player2 = new ComputerPlayer(_enemyBattleParties[0], playerNumber: 2); // Start with the first enemy party
                 break;
             case PlayerMode.HumanVsHuman:
-                _player1 = new HumanPlayer(GetHeroParty(name));
-                _player2 = new HumanPlayer(_enemyBattleParties[0]);
+                _player1 = new HumanPlayer(GetHeroParty(name), playerNumber: 1);
+                _player2 = new HumanPlayer(_enemyBattleParties[0], playerNumber: 2);
                 break;
             default:
-                _player1 = new ComputerPlayer(GetHeroParty(name));
-                _player2 = new ComputerPlayer(_enemyBattleParties[0]);
+                _player1 = new ComputerPlayer(GetHeroParty(name), playerNumber: 1);
+                _player2 = new ComputerPlayer(_enemyBattleParties[0], playerNumber: 2);
                 break;
         }
 

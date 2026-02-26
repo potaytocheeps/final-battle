@@ -5,13 +5,11 @@ public abstract class Player
 {
     public Party Party { get; private set; }
     public int PlayerNumber { get; }
-    private static int _instanceCount = 0; // Used to keep track of who is player 1 and who is player 2
 
-    public Player(Party party)
+    public Player(Party party, int playerNumber)
     {
         Party = party;
-        _instanceCount++;
-        PlayerNumber = _instanceCount;
+        PlayerNumber = playerNumber;
     }
 
     public void SetParty(Party party) => Party = party;

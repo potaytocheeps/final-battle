@@ -5,7 +5,7 @@
 /// </summary>
 public class HumanPlayer : Player
 {
-    public HumanPlayer(Party party) : base(party) { }
+    public HumanPlayer(Party party, int playerNumber) : base(party, playerNumber) { }
 
     public override void TakeTurn(Character currentCharacter, Player enemyPlayer, int currentRound)
     {
