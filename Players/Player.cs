@@ -103,6 +103,16 @@ public abstract class Player
 
         if (!gearWasSelected) return false;
 
+        // Player cannot equip multiple binary helms on their characters
+        if (gear is BinaryHelm)
+        {
+            if (currentCharacter.EquippedGear.Any(g => g.Name == gear.Name))
+            {
+                ColoredConsole.WriteLine("Cannot equip multiple Binary Helms.", ConsoleColor.DarkRed);
+                return false; // Action could not be completed. Ask player to select an action again
+            }
+        }
+
         currentCharacter.EquipGear(gear);
         Party.RemoveGearFromInventory(gear);
 
