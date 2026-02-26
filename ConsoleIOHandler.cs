@@ -199,4 +199,75 @@ public static class ConsoleIOHandler
             ColoredConsole.WriteLine("Invalid input. Please enter either 'y' or 'n'.", ConsoleColor.DarkRed);
         }
     }
+
+    public static void DisplayGameInformation()
+    {
+        ColoredConsole.WriteLine("\n");
+        ColoredConsole.WriteLine("""
+        GAME INFORMATION
+
+        [Attacks]
+
+            >---------Bite: (DMG: 2)------ Heals for amount of damage dealt
+            >--Bone Crunch: (DMG: 1-3)
+            >-Cannon Blast: (DMG: 1,3,10)- 3 damage every 3rd or 5th turn, 10 every 15th, 1 otherwise
+            >--Cannon Shot: (DMG: 1-2)
+            >------Grapple: (DMG: 2)------ 33% chance to steal a random piece of gear from target
+            >--------Punch: (DMG: 1)
+            >---Quick Shot: (DMG: 4)------ 50% chance to hit target
+            >--------Slash: (DMG: 3)
+            >---------Stab: (DMG: 2)
+            >---Unraveling: (DMG: 4-6)
+
+        [Gear]
+
+            >--------Binary Helm: Gives Damage Buff and Stone Armor modifiers
+            >-Cannon of Consolas: Gives special attack: Cannon Blast
+            >-------------Dagger: Gives special attack: Stab
+            >--------------Sword: Gives special attack: Slash
+            >----------Vin's Bow: Gives special attack: Quick Shot
+
+        [Items]
+
+            (Health Potions)
+                >------------Small: Heals 10 HP
+                >-----------Medium: Heals 20 HP
+                >------------Large: Heals 30 HP
+                >----Simula's Soup: Fully restores HP
+
+            (Cure Potions)
+                >--------Burn Cure: Cures Burned status effect
+                >-Electrified Cure: Cures Electrified status effect
+                >------Poison Cure: Cures Poisoned status effect
+                >---------Cure All: Cures all status effects
+
+        [Modifiers]
+
+            >--Damage Buff: +1 damage dealt
+            >--Stone Armor: -1 damage taken
+            >-Object Sight: -2 damage taken from Decoding damage type
+
+        [Damage Types]
+
+            >-Physical (20% chance to deal double damage)
+            >-----Fire (33% chance to inflict Burn)
+            >-Electric (33% chance to inflict Electrification)
+            >---Poison (33% chance to inflict Poison)
+            >-Decoding (75% chance to inflict a random status effect | 10% chance to deal double damage)
+
+        [Status Effects]
+
+            (Burn)
+                >---Effect: Deals 5% of inflicted character's max HP as damage per turn
+                >-Duration: 3 turns
+            (Poison)
+                >---Effect: Starting from the damage the attack dealt, deals 1 less damage per turn to inflicted character
+                >-Duration: Until damage reaches 0
+            (Electrification)
+                >---Effect: Prevents inflicted character from acting during their turn
+                >-Duration: 1 turn
+        """);
+
+        WaitForPlayerConfirmation();
+    }
 }

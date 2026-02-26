@@ -15,7 +15,10 @@
     }
 
     ColoredConsole.WriteLine("");
-    string playerName = ColoredConsole.PromptUser("Enter the name for the True Programmer: ", ConsoleColor.Gray);
+    string playerName = ColoredConsole.PromptUser("Enter the name for the True Programmer: ", ConsoleColor.Gray, isNameInput: true);
+
+    ColoredConsole.WriteLine("\nTip: You can type 'help' at any time to display helpful information about the game.", ConsoleColor.Yellow);
+    ConsoleIOHandler.WaitForPlayerConfirmation();
 
     Game game = new Game(playerName, playerMode, gameDifficulty);
     game.PlayGame();

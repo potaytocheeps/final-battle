@@ -17,7 +17,7 @@ public static class ColoredConsole
         Console.ResetColor();
     }
 
-    public static string PromptUser(string question, ConsoleColor color = ConsoleColor.White)
+    public static string PromptUser(string question, ConsoleColor color = ConsoleColor.White, bool isNameInput = false)
     {
         while (true)
         {
@@ -27,6 +27,15 @@ public static class ColoredConsole
             string? input = Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(input)) continue;
+
+            if (!isNameInput)
+            {
+                if (input.ToLower() == "help")
+                {
+                    ConsoleIOHandler.DisplayGameInformation();
+                    continue;
+                }
+            }
 
             Console.ResetColor();
             return input;
