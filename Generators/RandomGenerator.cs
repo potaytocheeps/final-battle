@@ -101,15 +101,15 @@ public static class RandomGenerator
 
         return randomItemType switch
         {
-            ItemType.SmallHealthPotion  => new SmallHealthPotion(),
-            ItemType.MediumHealthPotion => new MediumHealthPotion(),
-            ItemType.LargeHealthPotion  => new LargeHealthPotion(),
+            ItemType.SmallHealthPotion  => HealthPotion.SmallHealthPotion(),
+            ItemType.MediumHealthPotion => HealthPotion.MediumHealthPotion(),
+            ItemType.LargeHealthPotion  => HealthPotion.LargeHealthPotion(),
             ItemType.SimulasSoup        => new SimulasSoup(),
-            ItemType.BurnCure           => new BurnCure(),
-            ItemType.ElectrifiedCure    => new ElectrifiedCure(),
-            ItemType.PoisonCure         => new PoisonCure(),
+            ItemType.BurnCure           => CurePotion.BurnCure(),
+            ItemType.ElectrifiedCure    => CurePotion.ElectrifiedCure(),
+            ItemType.PoisonCure         => CurePotion.PoisonCure(),
             ItemType.CureAll            => new CureAll(),
-            _                           => new SmallHealthPotion()
+            _                           => HealthPotion.SmallHealthPotion()
         };
     }
 }

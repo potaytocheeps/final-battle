@@ -60,21 +60,21 @@ public static class PartyGenerator
         {
             case Difficulty.Easy:
                 characters    = [new TheUncodedOne(maxHP: 50)];
-                startingItems = [new MediumHealthPotion(), new MediumHealthPotion(), new SmallHealthPotion()];
+
+                startingItems = [..HealthPotion.CreatePotions(numberOfSmall: 1, numberOfMedium: 2)];
                 break;
             case Difficulty.Medium:
                 characters    = [new TheUncodedOne(maxHP: 60),
                                  RandomGenerator.GetRandomEnemy(Difficulty.Medium)];
-                startingItems = [new MediumHealthPotion(), new MediumHealthPotion(), new LargeHealthPotion(),
-                                 new SmallHealthPotion(), new SmallHealthPotion(), new SmallHealthPotion()];
+
+                startingItems = [..HealthPotion.CreatePotions(numberOfSmall: 3, numberOfMedium: 2, numberOfLarge: 1)];
                 break;
             case Difficulty.Hard:
                 characters    = [new TheUncodedOne(maxHP: 80),
                                  RandomGenerator.GetRandomEnemy(Difficulty.Medium),
                                  RandomGenerator.GetRandomEnemy(Difficulty.Hard)];
-                startingItems = [new SmallHealthPotion(), new MediumHealthPotion(), new LargeHealthPotion(),
-                                 new SmallHealthPotion(), new LargeHealthPotion(), new MediumHealthPotion(),
-                                 new SmallHealthPotion(), new SmallHealthPotion()];
+
+                startingItems = [..HealthPotion.CreatePotions(numberOfSmall: 4, numberOfMedium: 2, numberOfLarge: 2)];
                 break;
         }
 

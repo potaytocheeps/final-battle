@@ -76,9 +76,8 @@ public class Game
         return new Party
         (
             characters: [new TrueProgrammer(name), new VinFletcher(), new MylaraAndSkorin()],
-            startingItems: [new SmallHealthPotion(), new SmallHealthPotion(),
-                            new MediumHealthPotion(), new LargeHealthPotion(),
-                            new BurnCure(), new PoisonCure(), new ElectrifiedCure()],
+            startingItems: [..HealthPotion.CreatePotions(numberOfSmall: 2, numberOfMedium: 1, numberOfLarge: 1),
+                            ..CurePotion.CreatePotions(numberOfBurn: 1, numberOfElectrified: 1, numberOfPoison: 1)],
             startingGear: []
         );
     }

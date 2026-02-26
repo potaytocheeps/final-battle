@@ -1,7 +1,7 @@
 /// <summary>
 /// A consumable item that cures a character from a status effect.
 /// </summary>
-public abstract class CurePotion : Item
+public class CurePotion : Item
 {
     private StatusEffectType _statusEffectType;
 
@@ -24,4 +24,27 @@ public abstract class CurePotion : Item
             ColoredConsole.WriteLine($"{this} did nothing.");
         }
     }
+
+    public static List<CurePotion> CreatePotions(int numberOfBurn = 0, int numberOfElectrified = 0, int numberOfPoison = 0)
+    {
+        return [..CreatePotions(numberOfBurn, BurnCure),
+                ..CreatePotions(numberOfElectrified, ElectrifiedCure),
+                ..CreatePotions(numberOfPoison, PoisonCure)];
+    }
+
+    private static List<CurePotion> CreatePotions(int numberOfPotions, Func<CurePotion> createPotion)
+    {
+        List<CurePotion> curePotions = [];
+
+        for (int currentPotion = 0; currentPotion < numberOfPotions; currentPotion++)
+        {
+            curePotions.Add(createPotion());
+        }
+
+        return curePotions;
+    }
+
+    public static CurePotion BurnCure() => new CurePotion("Burn Cure", StatusEffectType.Burned);
+    public static CurePotion ElectrifiedCure() => new CurePotion("Electrified Cure", StatusEffectType.Electrified);
+    public static CurePotion PoisonCure() => new CurePotion("Poison Cure", StatusEffectType.Poisoned);
 }
